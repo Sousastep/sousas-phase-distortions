@@ -1,0 +1,173 @@
+// ============================================================================
+// 00b_tuba_transient_valve_detector.txt
+// Tuba Tongue-Attack & Valve-Click Transient Detector + Transition Freeze Engine
+// ============================================================================
+// Designed specifically for live amplified/effected tuba dubstep & riddim:
+//   1. Dual-Band Spectral Flux & Teager-Kaiser Energy Operator (TKEO):
+//      - Band A (Tongue / Lip Attack, 80 Hz - 900 Hz): Detects the explosive
+//        low-mid pressure wavefront ("tah" / "dah" / slap-tongue) using
+//        log-ratio fast/slow differential envelope + TKEO (psi[x] = x[n-1]^2 - x[n]*x[n-2]).
+//      - Band B (Valve Click / Air Chuff, 1.8 kHz - 9 kHz): Detects mechanical
+//        piston/rotary clacks and unpitched breath bursts where high-frequency
+//        energy spikes while low-end periodicity drops.
+//   2. Outputs 4 performance control signals at audio rate:
+//      - out1: Combined Trigger Impulse (1.0 spike for 2 ms on every tongue/attack)
+//      - out2: Shaped Dubstep Synth Attack-Decay Envelope [0.0 .. 1.0] (for whipping
+//              filter cutoffs, FM indices, or allpass dispersion on every tongue hit)
+//      - out3: Pitch-Freeze / Transition Gate (1.0 during messy valve transitions or
+//              unpitched attacks so downstream pitch trackers hold steady)
+//      - out4: Isolated Valve-Click Trigger Impulse (1.0 spike specifically on mechanical
+//              valve/chuff transients for triggering percussion/glitch layers)
+// ============================================================================
+// Inlets:
+//   in1: Left Audio Input (Tuba)
+//   in2: Right Audio Input (Tuba; mono in1 supported automatically)
+//   in3: Optional Pitch Confidence [0..1] (from out2 of 00_tuba_sift_yin_tracker)
+// Outlets:
+//   out1: Master Tongue/Attack Trigger Pulse [0 or 1]
+//   out2: Dubstep Mod Envelope [0.0 .. 1.0]
+//   out3: Transition Freeze Gate [0 or 1] (1 = freeze pitch during transition/click)
+//   out4: Valve-Click / Air-Chuff Specific Trigger [0 or 1]
+
+@param({ min: 0.0, max: 1.0 }) sensitivity = 0.65;
+@param({ min: 15.0, max: 1500.0 }) env_decay_ms = 220.0;
+@param({ min: 5.0, max: 150.0 }) freeze_hold_ms = 35.0;
+@param({ min: -1.0, max: 1.0 }) env_curve = -0.35;
+
+// Band-splitting filters: Tongue body (SVF bandpass ~280 Hz) vs Valve click (SVF highpass ~2200 Hz)
+@state svfTongue = new svf();
+@state svfValve1 = new svf();
+@state svfValve2 = new svf();
+
+// TKEO (Teager-Kaiser Energy Operator) 2-sample delay history for instantaneous wavefront detection
+@state tkT1 = 0.0; @state tkT2 = 0.0;
+@state tkV1 = 0.0; @state tkV2 = 0.0;
+
+// Dual-speed Differential Envelope Followers (Fast attack vs Slow baseline reference)
+@state fastTongue = 0.0;
+@state slowTongue = 0.0;
+@state fastValve = 0.0;
+@state slowValve = 0.0;
+
+// Trigger hold, refractory lockout (debounce), Freeze timer, and Dubstep Envelope state
+@state lockoutSamps = 0.0;
+@state trigPulseSamps = 0.0;
+@state valvePulseSamps = 0.0;
+@state freezeSamps = 0.0;
+@state modEnvPhase = 1.0;
+@state peakVel = 1.0;
+
+let sr = maximum(samplerate(), 1.0);
+let xL = in1;
+let xR = in2;
+let confIn = in3;
+
+let mono = (abs(xR) > 0.0000001) ? (0.5 * (xL + xR)) : xL;
+
+// ============================================================================
+// 1. SPECTRAL SEPARATION: TONGUE WAVEFRONT vs. MECHANICAL VALVE CLICK
+// ============================================================================
+// Tongue Band: Bandpass centered at 260 Hz (captures fundamental + 2nd/3rd harmonic "tah" punch)
+let tongueSig = svfTongue.next(mono, 260.0, 0.55)[2];
+
+// Valve / Chuff Band: 2-stage Highpass at 2200 Hz (captures piston/rotor clack & lip burst)
+let hp1 = svfValve1.next(mono, 2200.0, 0.707)[1];
+let valveSig = svfValve2.next(hp1, 2200.0, 0.707)[1];
+
+// ============================================================================
+// 2. TEAGER-KAISER ENERGY OPERATOR: psi(x[n]) = x[n-1]^2 - x[n]*x[n-2]
+// Responds in 3 samples to sudden changes in both amplitude AND frequency!
+// ============================================================================
+let tkeoTongue = abs(tkT1 * tkT1 - tongueSig * tkT2);
+tkT2 = tkT1;
+tkT1 = tongueSig;
+
+let tkeoValve = abs(tkV1 * tkV1 - valveSig * tkV2);
+tkV2 = tkV1;
+tkV1 = valveSig;
+
+let energyTongue = abs(tongueSig) + 2.5 * sqrt(tkeoTongue);
+let energyValve = abs(valveSig) * 3.0 + 4.0 * sqrt(tkeoValve);
+
+// ============================================================================
+// 3. DIFFERENTIAL FAST / SLOW ENVELOPE RATIO (ONSET FLUX)
+// ============================================================================
+let cFastT = 1.0 - exp(-1.0 / (0.0012 * sr)); // 1.2 ms fast attack
+let cSlowT = 1.0 - exp(-1.0 / (0.045 * sr));  // 45 ms adaptive baseline
+fastTongue += (energyTongue - fastTongue) * cFastT;
+slowTongue += (energyTongue - slowTongue) * cSlowT;
+
+let cFastV = 1.0 - exp(-1.0 / (0.0005 * sr)); // 0.5 ms ultra-fast click capture
+let cSlowV = 1.0 - exp(-1.0 / (0.030 * sr));  // 30 ms baseline
+fastValve += (energyValve - fastValve) * cFastV;
+slowValve += (energyValve - slowValve) * cSlowV;
+
+// Normalized onset ratios
+let fluxTongue = (fastTongue - slowTongue) / (slowTongue + 0.002);
+let fluxValve = (fastValve - slowValve) / (slowValve + 0.0008);
+
+// Sensitivity taper: maps [0..1] to threshold in [3.2 .. 0.35]
+let sens = clamp(sensitivity, 0.0, 1.0);
+let threshTongue = 3.2 * pow(0.11, pow(sens, 1.2));
+let threshValve = threshTongue * 1.15;
+
+// ============================================================================
+// 4. TRANSIENT CLASSIFICATION, DEBOUNCE & PITCH-FREEZE TIMER
+// ============================================================================
+if (lockoutSamps > 0.0) {
+	lockoutSamps -= 1.0;
+}
+
+let isTongueHit = (fluxTongue > threshTongue && fastTongue > 0.004 && lockoutSamps <= 0.0);
+let isValveHit = (fluxValve > threshValve && fastValve > 0.0015 && lockoutSamps <= 0.0);
+
+let pulseLen = mstosamps(2.5); // 2.5 ms trigger pulse width for downstream RNBO objects
+let refLock = mstosamps(28.0); // 28 ms refractory debounce period
+
+if (isTongueHit || isValveHit) {
+	trigPulseSamps = pulseLen;
+	lockoutSamps = refLock;
+	modEnvPhase = 0.0; // Reset dubstep attack-decay envelope
+	peakVel = clamp(0.4 + 0.6 * sqrt(fastTongue * 8.0 + fastValve * 4.0), 0.35, 1.0);
+	// Start transition pitch-freeze timer
+	freezeSamps = mstosamps(clamp(freeze_hold_ms, 5.0, 150.0));
+	if (isValveHit && fluxValve > fluxTongue * 0.9) {
+		valvePulseSamps = pulseLen;
+	}
+}
+
+// ============================================================================
+// 5. DUBSTEP SYNTH ENVELOPE GENERATOR & TRANSITION FREEZE OUTPUTS
+// ============================================================================
+let trigOut = 0.0;
+if (trigPulseSamps > 0.0) {
+	trigPulseSamps -= 1.0;
+	trigOut = 1.0;
+}
+
+let valveOut = 0.0;
+if (valvePulseSamps > 0.0) {
+	valvePulseSamps -= 1.0;
+	valveOut = 1.0;
+}
+
+// Also hold freeze gate high if external tracker confidence (in3) drops during slurs
+let confFreeze = (confIn > 0.0001 && confIn < 0.45) ? 1.0 : 0.0;
+let freezeOut = confFreeze;
+if (freezeSamps > 0.0) {
+	freezeSamps -= 1.0;
+	freezeOut = 1.0;
+}
+
+// Advance Attack-Decay Dubstep Mod Envelope (1.5 ms punch attack + curved decay)
+let decSamples = maximum(mstosamps(clamp(env_decay_ms, 15.0, 1500.0)), 10.0);
+modEnvPhase = clamp(modEnvPhase + 1.0 / decSamples, 0.0, 1.0);
+
+// Shape decay curve with env_curve (-1.0 = snappy whip, 0.0 = linear, +1.0 = convex sustain)
+let cExp = pow(3.0, -clamp(env_curve, -1.0, 1.0));
+let envVal = pow(1.0 - modEnvPhase, cExp) * peakVel;
+
+out1 = trigOut;
+out2 = envVal;
+out3 = freezeOut;
+out4 = valveOut;

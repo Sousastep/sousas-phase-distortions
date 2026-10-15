@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Novel Distortion Approaches for Live Tuba</title>
+<style>
+  :root {
+    /* --hue is driven by scroll position (see script at bottom). Saturation and
+       lightness stay low so the shift is felt rather than seen. */
+    --hue: 225;
+    --bg: hsl(var(--hue) 18% 7%);
+    --bg-side: hsl(var(--hue) 20% 10%);
+    --bg-code: hsl(var(--hue) 20% 13%);
+    --bg-table-alt: hsl(var(--hue) 18% 9%);
+    --bg-thead: hsl(var(--hue) 20% 14%);
+    --border: hsl(var(--hue) 18% 19%);
+    --text: #d8dbe2;
+    --text-dim: #9aa3b2;
+    --heading: #f2f4f8;
+    --accent: #e0a458;
+    --accent-soft: rgba(224, 164, 88, 0.14);
+    --link: #7fb3f0;
+    --code: #f0c98a;
+    --side-w: 300px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 1.5rem; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Layout ---------- */
+  .layout { display: flex; min-height: 100vh; }
+
+  nav.sidebar {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    width: var(--side-w);
+    flex: 0 0 var(--side-w);
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--bg-side);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 1.1rem 2rem 1.4rem;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  nav.sidebar .brand {
+    display: block;
+    color: var(--heading);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    margin-bottom: 0.25rem;
+  }
+  nav.sidebar .brand-sub {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  nav.sidebar ul { list-style: none; margin: 0; padding: 0; }
+  nav.sidebar > ul > li { margin: 0.15rem 0; }
+  nav.sidebar ul ul { margin-left: 0.8rem; border-left: 1px solid var(--border); padding-left: 0.6rem; margin-top: 0.15rem; }
+  nav.sidebar ul ul a { color: var(--text-dim); font-size: 0.8rem; }
+
+  nav.sidebar a {
+    display: block;
+    color: var(--text);
+    text-decoration: none;
+    padding: 0.28rem 0.55rem;
+    margin: 0.05rem 0;
+    border-radius: 6px;
+    border-left: 2px solid transparent;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  nav.sidebar a:hover { background: var(--accent-soft); color: var(--heading); }
+  nav.sidebar a.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-left-color: var(--accent);
+  }
+
+  main {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 3rem 4rem 6rem;
+  }
+  /* overflow-wrap also covers bare URLs in plain text (e.g. the Attributions
+     prompt), which are not inside links. */
+  .content { max-width: 78ch; margin: 0 auto; overflow-wrap: anywhere; }
+
+  /* ---------- Typography ---------- */
+  h1, h2, h3, h4 {
+    color: var(--heading);
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  h1 { font-size: 2.3rem; margin: 0 0 1rem; }
+  h2 {
+    font-size: 1.6rem;
+    margin: 3.2rem 0 1rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 { font-size: 1.22rem; margin: 2.2rem 0 0.7rem; color: var(--accent); }
+  h4 { font-size: 1.02rem; margin: 1.6rem 0 0.5rem; }
+
+  h2 a.anchor, h3 a.anchor { color: inherit; text-decoration: none; }
+
+  p { margin: 0 0 1.1rem; }
+  strong { color: var(--heading); font-weight: 650; }
+  em { color: #e9ebf0; }
+
+  a {
+    color: var(--link);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(127, 179, 240, 0.35);
+    /* Long, unbroken URLs (e.g. in the references) must wrap instead of
+       stretching the page width on narrow screens. */
+    overflow-wrap: anywhere;
+  }
+  a:hover { border-bottom-color: var(--link); }
+
+  ul, ol { padding-left: 1.5rem; margin: 0 0 1.2rem; }
+  li { margin: 0.35rem 0; }
+  li > p { margin-bottom: 0.5rem; }
+
+  hr { border: 0; border-top: 1px solid var(--border); margin: 3rem 0; }
+
+  blockquote {
+    margin: 1.2rem 0;
+    padding: 0.4rem 1.2rem;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    color: var(--text);
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* ---------- Code ---------- */
+  code, pre {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.9em;
+  }
+  code {
+    background: var(--bg-code);
+    color: var(--code);
+    padding: 0.12em 0.4em;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  pre {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+    margin: 1.2rem 0 1.4rem;
+    line-height: 1.55;
+  }
+  pre code {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: #e6e9ef;
+    white-space: pre;
+    font-size: 0.86rem;
+  }
+
+  /* ---------- Tables ---------- */
+  .table-wrap { overflow-x: auto; margin: 1.2rem 0 1.6rem; border-radius: 8px; border: 1px solid var(--border); }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  thead th {
+    text-align: left;
+    background: var(--bg-thead);
+    color: var(--heading);
+    font-weight: 650;
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 0.65rem 0.9rem;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr:nth-child(even) { background: var(--bg-table-alt); }
+  tbody tr:hover { background: var(--accent-soft); }
+  tbody tr:last-child td { border-bottom: 0; }
+  td code { white-space: normal; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .layout { flex-direction: column; }
+    nav.sidebar {
+      position: static;
+      width: 100%;
+      flex: none;
+      height: auto;
+      max-height: 45vh;
+      border-right: 0;
+      border-bottom: 1px solid var(--border);
+    }
+    main { padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.8rem; }
+    body { font-size: 16px; }
+  }
+
+  @media print {
+    nav.sidebar { display: none; }
+    body { background: #fff; color: #111; }
+    main { padding: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar" aria-label="Table of contents">
+    <a class="brand" href="#top">Novel Distortion Approaches for Live Tuba</a>
+    <div class="brand-sub">Contents</div>
+<ul>
+<li><a href="#0-the-front-end-turning-the-tuba-into-a-phasor" id="toc-0-the-front-end-turning-the-tuba-into-a-phasor">0. The front end: turning the tuba into a phasor</a></li>
+<li><a href="#1-adaptive-fm--pm-the-tuba-as-modulator-carrier-or-both" id="toc-1-adaptive-fm--pm-the-tuba-as-modulator-carrier-or-both">1. Adaptive FM / PM (the tuba as modulator, carrier, or both)</a>
+<ul>
+<li><a href="#1a-tuba-as-modulator-synthesized-carrier" id="toc-1a-tuba-as-modulator-synthesized-carrier">1a. Tuba as modulator, synthesized carrier</a></li>
+<li><a href="#1b-tuba-as-carrier-self-modulation-via-delay-line--lazzarinitimoney-adfm" id="toc-1b-tuba-as-carrier-self-modulation-via-delay-line--lazzarinitimoney-adfm">1b. Tuba as carrier (self-modulation via delay line) — Lazzarini/Timoney "AdFM"</a></li>
+<li><a href="#1c-feedback-fm" id="toc-1c-feedback-fm">1c. Feedback FM</a></li>
+<li><a href="#1d-asymmetric--single-sideband-fm" id="toc-1d-asymmetric--single-sideband-fm">1d. Asymmetric / single-sideband FM</a></li>
+</ul></li>
+<li><a href="#2-phaseshaping--adaptive-phase-distortion-the-tuba-as-a-phasor" id="toc-2-phaseshaping--adaptive-phase-distortion-the-tuba-as-a-phasor">2. Phaseshaping / Adaptive Phase Distortion (the tuba as a phasor)</a>
+<ul>
+<li><a href="#the-papers-framing" id="toc-the-papers-framing">The paper's framing</a></li>
+<li><a href="#elementary-phaseshapers-paper-2" id="toc-elementary-phaseshapers-paper-2">Elementary phaseshapers (paper §2)</a></li>
+<li><a href="#oscillator-algorithms-from-the-paper-re-read-as-tuba-effects-paper-3" id="toc-oscillator-algorithms-from-the-paper-re-read-as-tuba-effects-paper-3">Oscillator algorithms from the paper, re-read as tuba effects (paper §3)</a></li>
+</ul></li>
+<li><a href="#3-analytic-signal-instantaneous-phase-transformations" id="toc-3-analytic-signal-instantaneous-phase-transformations">3. Analytic-signal ("instantaneous phase") transformations</a>
+<ul>
+<li><a href="#3a-phase-multiplication--harmonic-generation-chebyshev-without-polynomials" id="toc-3a-phase-multiplication--harmonic-generation-chebyshev-without-polynomials">3a. Phase multiplication / harmonic generation (Chebyshev without polynomials)</a></li>
+<li><a href="#3b-phase-division--phase-locked-sub-octaves-better-ring-mod-modulators" id="toc-3b-phase-division--phase-locked-sub-octaves-better-ring-mod-modulators">3b. Phase division → phase-locked sub-octaves (better ring-mod modulators)</a></li>
+<li><a href="#3c-frequency-shifting-bode--ssb" id="toc-3c-frequency-shifting-bode--ssb">3c. Frequency shifting (Bode / SSB)</a></li>
+<li><a href="#3d-phase-warping--phase-distortion-of-the-analytic-signal" id="toc-3d-phase-warping--phase-distortion-of-the-analytic-signal">3d. Phase warping / "phase distortion of the analytic signal"</a></li>
+<li><a href="#3e-amplitudephase-decoupling-and-swapping" id="toc-3e-amplitudephase-decoupling-and-swapping">3e. Amplitude/phase decoupling and swapping</a></li>
+<li><a href="#3f-rotating-ring-modulation" id="toc-3f-rotating-ring-modulation">3f. Rotating ring modulation</a></li>
+</ul></li>
+<li><a href="#4-waveshaping-on-the-sine-ified-signal-with-dynamics-decoupled" id="toc-4-waveshaping-on-the-sine-ified-signal-with-dynamics-decoupled">4. Waveshaping on the sine-ified signal (with dynamics decoupled)</a></li>
+<li><a href="#5-extensions-of-pitch-tracked-ring-modulation" id="toc-5-extensions-of-pitch-tracked-ring-modulation">5. Extensions of pitch-tracked ring modulation</a></li>
+<li><a href="#6-hybrid--meta-ideas" id="toc-6-hybrid--meta-ideas">6. Hybrid / meta ideas</a></li>
+<li><a href="#7-general-implementation-checklist" id="toc-7-general-implementation-checklist">7. General implementation checklist</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
+</ul>
+  </nav>
+  <main id="top">
+    <article class="content">
+      <h1>Novel Distortion Approaches for Live Tuba</h1>
+<p>Working notes on distortion/modulation techniques for a monophonic, pitch-tracked tuba signal. Written with RNBO (Max/MSP) in mind, but everything here is generic DSP and ports to any sample-rate environment.</p>
+<p><strong>Already in use (baseline):</strong> oversampled <code>atan</code> waveshaping, MS-20-style diode-clipper filter distortion, pitch-tracked ring modulation with a sub-octave modulator, and a "sine-ification" front end (pitch-tracked bell EQ boosting the fundamental by +12 to +48 dB).</p>
+<p>The central idea that unlocks most of what follows: <strong>once the tuba is reduced to something close to a sine wave, it becomes a <em>phasor</em></strong> — a signal with a well-defined instantaneous phase <code>θ(t)</code> and instantaneous amplitude <code>A(t)</code>. Almost every classic abstract synthesis technique (FM/PM, phase distortion, phaseshaping, waveshaping, SSB) is a function of a phasor. So instead of <em>synthesizing</em> a phasor from an oscillator, you <em>extract</em> one from the player and run it through the same machinery. Lazzarini &amp; Timoney call this family "adaptive" synthesis (Adaptive FM, Adaptive Phase Distortion, etc.).</p>
+<hr />
+<h2 id="0-the-front-end-turning-the-tuba-into-a-phasor">0. The front end: turning the tuba into a phasor</h2>
+<p>Everything below wants some subset of these signals:</p>
+<table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Meaning</th>
+<th>How to get it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>f0(t)</code></td>
+<td>tracked fundamental (Hz)</td>
+<td>pitch tracker (YIN / autocorrelation / <code>fzero~</code>-style), smoothed, with hold-on-silence</td>
+</tr>
+<tr>
+<td><code>s(t)</code></td>
+<td>near-sinusoidal tuba</td>
+<td>bell EQ at <code>f0</code>, +12…48 dB, optionally a steep pitch-tracked band-pass afterward</td>
+</tr>
+<tr>
+<td><code>s_a(t) = s(t) + j·ŝ(t)</code></td>
+<td>analytic signal</td>
+<td><code>ŝ</code> = Hilbert transform of <code>s</code> (90° phase-shifted copy)</td>
+</tr>
+<tr>
+<td><code>A(t) = sqrt(s² + ŝ²)</code></td>
+<td>instantaneous amplitude</td>
+<td>from the analytic signal</td>
+</tr>
+<tr>
+<td><code>θ(t) = atan2(ŝ, s)</code></td>
+<td>instantaneous phase, wrapped <code>[-π, π)</code></td>
+<td>from the analytic signal</td>
+</tr>
+<tr>
+<td><code>φ(t) = (θ + π) / 2π</code></td>
+<td>normalized phasor <code>[0, 1)</code></td>
+<td>rescale <code>θ</code>; this is a "player-driven phasor~"</td>
+</tr>
+<tr>
+<td><code>u(t) = s(t) / (A(t) + ε)</code></td>
+<td>unit-amplitude sine</td>
+<td>dynamics removed; use for modulation</td>
+</tr>
+<tr>
+<td><code>E(t)</code></td>
+<td>slow amplitude envelope (RMS/peak)</td>
+<td>envelope follower; use as a <em>control</em> for drive/index</td>
+</tr>
+</tbody>
+</table>
+<p>Notes on the front end:</p>
+<ul>
+<li><strong>Hilbert transform.</strong> Two practical options. (a) A pair of parallel IIR allpass cascades whose outputs differ by ~90° over the audio band (Max's <code>hilbert~</code> abstraction is built this way; it's a handful of biquads and trivial to rebuild in RNBO/gen). Very low latency, slight phase error at the band edges. (b) An FIR Hilbert filter — accurate but adds N/2 samples of latency, and for a 30–40 Hz fundamental you need a long kernel. For a live instrument, the IIR allpass pair is the right choice.</li>
+<li><strong>Amplitude normalization is essential.</strong> The tuba's dynamics are huge. If you use raw <code>s(t)</code> as a modulator, the modulation index rides on the player's volume and you get chaos on accents and nothing on soft notes. Divide by <code>A(t)</code> (fast, sample-accurate) to get <code>u(t)</code>, then re-introduce dynamics deliberately by mapping <code>E(t)</code> to index / drive / mix. This gives you two independent knobs — "how loud" and "how distorted" — that you can re-couple however you like (e.g., quiet = clean, loud = destroyed, or the inverse).</li>
+<li><strong>Boost vs. bandpass.</strong> The bell boost keeps the original harmonics underneath (nice for blending), but the residual harmonics make <code>θ(t)</code> jittery. If a technique needs a really clean phasor, follow the boost with a pitch-tracked 2nd/4th-order band-pass or a resonant low-pass sitting just above <code>f0</code>. Alternatively use a <strong>phase-locked oscillator</strong>: a sine oscillator whose phase is nudged toward <code>θ(t)</code> each sample (a PLL). This yields a perfectly clean phasor that still follows lip glissandi, vibrato, and pitch bends.</li>
+<li><strong>Silence / gating.</strong> <code>θ(t)</code> becomes noise when <code>A(t)</code> → 0. Freeze <code>f0</code>, fade the wet signal with <code>E(t)</code>, and clamp <code>u(t)</code> when <code>A</code> is below a threshold.</li>
+<li><strong>Unwrapping.</strong> For techniques that need a monotonic phase (phaseshaping, hard sync detection) you don't need to unwrap — the wrapped <code>φ ∈ [0,1)</code> <em>is</em> the phasor. But if you want to derive an octave-down phasor (<code>φ/2</code>) you need to count wraps; see §5.</li>
+</ul>
+<hr />
+<h2 id="1-adaptive-fm--pm-the-tuba-as-modulator-carrier-or-both">1. Adaptive FM / PM (the tuba as modulator, carrier, or both)</h2>
+<p>Classic FM: <code>y = cos(ω_c·t + I·cos(ω_m·t))</code>. In the adaptive version, one or both sinusoids are replaced by the tuba.</p>
+<h3 id="1a-tuba-as-modulator-synthesized-carrier">1a. Tuba as modulator, synthesized carrier</h3>
+<pre><code>y(t) = A(t) · cos( 2π·(r · f0(t))·t  +  I(t) · u(t) )</code></pre>
+<ul>
+<li>The carrier is a clean oscillator at a <strong>ratio <code>r</code> of the tracked pitch</strong>. Integer <code>r</code> gives harmonic spectra; <code>r = 0.5</code>, <code>1.5</code>, <code>√2</code>… gives sub-octaves, fifths, and inharmonic "bell-brass". Because both sides follow <code>f0</code>, the spectrum's <em>shape</em> stays constant as the player moves — it behaves like a stable timbre, not an effect.</li>
+<li><code>I</code> = modulation index. Map <code>E(t)</code> → <code>I</code> so breath pressure controls brightness (the Chowning brass recipe, but with real breath).</li>
+<li>Because <code>u(t)</code> still contains some residual tuba harmonics, the sidebands are a little "dirty" compared to textbook FM — this is a feature; it sounds like the player, not a DX7.</li>
+</ul>
+<h3 id="1b-tuba-as-carrier-self-modulation-via-delay-line--lazzarinitimoney-adfm">1b. Tuba as carrier (self-modulation via delay line) — Lazzarini/Timoney "AdFM"</h3>
+<p>Phase modulation of an arbitrary signal is just a <strong>modulated delay line</strong>:</p>
+<pre><code>y(t) = x(t − d(t)),     d(t) = d0 + (I / (2π·f0(t))) · u(t)</code></pre>
+<ul>
+<li>Here <code>x</code> can be the <em>full, un-boosted</em> tuba. The result is FM applied to the actual brass spectrum: every harmonic gets its own sideband cluster, producing thick, chorus-y-to-metallic timbres depending on <code>I</code>.</li>
+<li>Dividing the depth by <code>f0</code> keeps the <em>effective</em> index constant across register (a fixed delay depth is a much larger phase swing at high pitch).</li>
+<li>Use interpolated (cubic / allpass) fractional delay; linear interpolation will low-pass and gurgle at large depths.</li>
+<li>Variation: modulate the delay with <code>cos(2θ)</code>, <code>cos(θ/2)</code> etc. (derived from <code>θ</code>, §3) for octave-locked or sub-octave-locked FM.</li>
+</ul>
+<h3 id="1c-feedback-fm">1c. Feedback FM</h3>
+<p>Feed the output back into the delay/phase: <code>d(t) = d0 + k·y(t−1)</code>. Small <code>k</code> = sawtooth-ish brightening; large <code>k</code> = chaotic, noisy, "torn" brass. Very sensitive; clamp <code>k</code> and keep it oversampled.</p>
+<h3 id="1d-asymmetric--single-sideband-fm">1d. Asymmetric / single-sideband FM</h3>
+<p>Using the analytic signal you can generate only <em>upper</em> or only <em>lower</em> sidebands (Lazzarini &amp; Timoney, "Asymmetric-Spectra Methods for Adaptive FM", DAFx-08; "Split-Sideband Synthesis", ICMC-08). Independent control of upper vs. lower sidebands lets you brighten without adding sub-fundamental mud — often the issue with FM on a bass instrument.</p>
+<p><strong>Watch out for:</strong> aliasing (FM sidebands extend far; keep the 2–4× oversampling you already use), and pitch-tracker glitches (a wrong octave estimate instantly changes the ratio — slew-limit <code>f0</code> and reject jumps).</p>
+<hr />
+<h2 id="2-phaseshaping--adaptive-phase-distortion-the-tuba-as-a-phasor">2. Phaseshaping / Adaptive Phase Distortion (the tuba as a phasor)</h2>
+<p>This is the direct application of the linked SMC 2010 paper (Kleimola, Lazzarini, Timoney, Välimäki — <em>Phaseshaping Oscillator Algorithms for Musical Sound Synthesis</em>) plus Lazzarini et al.'s <em>Adaptive Phase Distortion Synthesis</em> (DAFx-09).</p>
+<h3 id="the-papers-framing">The paper's framing</h3>
+<p>The paper's central observation is that FM, phase distortion, and waveshaping are all the same thing viewed differently. A sinusoidal oscillator is a waveshaper <code>cos(·)</code> acting on a sawtooth — the phasor <code>φ(n) ∈ [0,1)</code>. Phase distortion is therefore <strong>double waveshaping</strong>:</p>
+<pre><code>y = cos( 2π · g(φ) )      φ = phasor (unipolar modulo counter), g = &quot;phaseshaper&quot;</code></pre>
+<p>A linear <code>g</code> just transposes; a nonlinear <code>g</code> changes the waveform. The paper then builds a small vocabulary of <em>elementary</em> phaseshapers and <strong>nests</strong> them (function composition, <code>f ∘ g ∘ h</code>) to reproduce classic oscillator effects and invent new ones — explicitly noting that this modular approach maps directly onto Max/Pd/Reaktor patching.</p>
+<p><strong>For the tuba:</strong> replace the oscillator's <code>φ(n)</code> with the extracted phasor <code>φ(t)</code> from §0. The <em>player</em> decides where in the cycle we are; <code>g</code> decides what the waveform looks like. Multiply by <code>A(t)</code> to restore dynamics. Everything below is then a live effect rather than an oscillator.</p>
+<h3 id="elementary-phaseshapers-paper-2">Elementary phaseshapers (paper §2)</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Definition</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mod1[x]</code></td>
+<td><code>x − floor(x)</code> (fractional part)</td>
+<td>wrap back to <code>[0,1)</code></td>
+</tr>
+<tr>
+<td><code>modm[x, m]</code></td>
+<td><code>x − m·floor(x/m)</code>, real <code>m</code></td>
+<td>wrap at an arbitrary modulus</td>
+</tr>
+<tr>
+<td><code>gb[x]</code></td>
+<td><code>2x − 1</code></td>
+<td>unipolar → bipolar</td>
+</tr>
+<tr>
+<td><code>gu[x]</code></td>
+<td><code>0.5x + 0.5</code></td>
+<td>bipolar → unipolar</td>
+</tr>
+<tr>
+<td><code>glin[x, a1, a0]</code></td>
+<td><code>a1·x + a0</code></td>
+<td>scale/offset; <code>a1 &gt; 1</code> shortens the phase period, <code>a1 &lt; 1</code> changes slope</td>
+</tr>
+<tr>
+<td><code>gtri[x, a1]</code></td>
+<td><code>mod1 ∘ glin ∘ abs ∘ gb</code></td>
+<td>triangular phase (phase cycle runs twice per period, second half time-reversed)</td>
+</tr>
+<tr>
+<td><code>gpulse[x, w]</code></td>
+<td><code>x(n) − x(n + wP)</code> (difference of two ramps) or trivial <code>1 if x&lt;w else 0</code></td>
+<td>rectangular signal, width <code>w</code></td>
+</tr>
+<tr>
+<td><code>gvtri[x, w, a1]</code></td>
+<td><code>mod1 ∘ glin ∘ svtri</code>, <code>svtri = aT·(gb[x]² − gb[x−w]²) + 0.5</code>, <code>aT = 1/(8(w−w²))</code></td>
+<td>variable-slope (tilted) triangle phase</td>
+</tr>
+<tr>
+<td><code>gripple[x, m]</code></td>
+<td><code>x + modm[x, m]</code> (small <code>m</code>)</td>
+<td>phase ramp with small-amplitude ripples</td>
+</tr>
+<tr>
+<td><code>polyBLEP-mod</code></td>
+<td><code>mod1</code> whose discontinuity is smoothed by a 2-sample polyBLEP correction</td>
+<td><em>anti-aliased</em> wrap ("soft modulo")</td>
+</tr>
+</tbody>
+</table>
+<p>The key trick that appears again and again: <strong><code>mod1 ∘ glin</code> with <code>a1 &gt; 1</code> produces a fractional-period ramp</strong> — a phase that completes <code>a1</code> cycles per fundamental period, then snaps back. That single composition is the engine behind hard sync, supersaw, and the resonant sweeps.</p>
+<h3 id="oscillator-algorithms-from-the-paper-re-read-as-tuba-effects-paper-3">Oscillator algorithms from the paper, re-read as tuba effects (paper §3)</h3>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Composition (on the tuba phasor <code>φ</code>)</th>
+<th>What you hear</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Waveslice</strong> (Minimoog saw)</td>
+<td><code>sin(2π · glin[φ, a1=0.25])</code></td>
+<td>only a quarter of a sine per period → analog-style saw; other <code>a1 &lt; 1</code> slice other portions</td>
+</tr>
+<tr>
+<td><strong>Single-oscillator hard sync</strong></td>
+<td><code>gb ∘ mod1 ∘ glin[φ, a1]</code>, then <code>cos</code> or output the ramp directly</td>
+<td>a slave oscillator at <code>a1 · f0</code> hard-synced to the tuba's period, <strong>with no second oscillator</strong>; sweep <code>a1</code> for classic sync</td>
+</tr>
+<tr>
+<td><strong>Soft sync</strong></td>
+<td><code>gb ∘ gtri[φ, a1]</code> (optionally through a triangular waveshaper)</td>
+<td>slope inverts at the sync point instead of resetting → gentler sync</td>
+</tr>
+<tr>
+<td><strong>PWM</strong></td>
+<td><code>gb ∘ gpulse[φ, w]</code> or <code>spulse,b ∘ mod1 ∘ glin[φ, a1]</code></td>
+<td>pulse with duty <code>w</code>; with <code>a1 &gt; 1</code> becomes a synced square</td>
+</tr>
+<tr>
+<td><strong>Triangle modulation</strong> (JP-8000)</td>
+<td><code>xT = aTM·gtri[φ,2] − 1;  y = 2(xT − ceil(xT) − 0.5)</code>, <code>aTM ∈ [0.7, 1]</code></td>
+<td>odd harmonics only, 3rd dominant, formant-like sweeps as <code>aTM</code> moves</td>
+</tr>
+<tr>
+<td><strong>Supersaw</strong> (JP-8000)</td>
+<td><code>sin(2π · gb{ modm[ modm[a1φ, m1] + a1φ, m2 ] })</code>, <code>a1 = 1.5</code>, <code>m2 ≈ 0.88</code>, LFO on <code>m1</code></td>
+<td>seven-detuned-saw thickness from <strong>one</strong> sinusoidal waveshaper; on a tuba this is a huge unison pad locked to the played note</td>
+</tr>
+<tr>
+<td><strong>Variable-slope ramp → sine</strong></td>
+<td><code>φ · (1 + gpulse[φ − 1, w])</code>, then <code>sin</code></td>
+<td>alternating half- and full-cycle sine segments; <code>w</code> moves modest formants across the spectrum</td>
+</tr>
+<tr>
+<td><strong>Tilted-triangle → sine</strong></td>
+<td><code>sin(2π · gvtri[φ, w, a1])</code></td>
+<td>stronger formant whose position is set by <code>a1</code>; every 4th harmonic missing outside it; <code>a1 → 0</code> tilts the sine toward a bright quarter-cycle segment (spectral-tilt control)</td>
+</tr>
+</tbody>
+</table>
+<p>A few more from the wider PD tradition that fit the same framework:</p>
+<table>
+<thead>
+<tr>
+<th>Phaseshaper <code>g(φ)</code></th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Casio-CZ knee: fast ramp to <code>1/2</code> at <code>φ = d</code>, slow ramp after</td>
+<td>sine → saw morph; <code>d → 0</code> gives the CZ "resonant saw"</td>
+</tr>
+<tr>
+<td><code>g = φ + I·sin(2πφ)</code></td>
+<td>phase modulation with a phase-locked modulator (FM with zero drift)</td>
+</tr>
+<tr>
+<td><code>g = φ^p</code></td>
+<td>asymmetric waveforms, odd/even balance</td>
+</tr>
+<tr>
+<td><code>cos(2π·n·φ)</code> windowed by a saw/triangle of <code>φ</code></td>
+<td>CZ "resonance": filter-sweep sound without a filter</td>
+</tr>
+</tbody>
+</table>
+<p>Practical points:</p>
+<ul>
+<li><strong>This is not a resynthesizer in the vocoder sense</strong> — it's sample-accurate, essentially zero-latency (limited only by the Hilbert filter), and follows every wobble of <code>θ(t)</code>. Residual harmonics in <code>s(t)</code> cause small phase jitter that adds a natural "grain" to the synthesized waveform; a cleaner front end (PLL, §0) removes it if unwanted.</li>
+<li><strong>The paper's own conclusion is the tuba's selling point.</strong> The authors note that these algorithms "respond well to secondary control streams that carry minute articulated expressions of the performer." Here the <em>primary</em> signal already is the performer: <code>φ</code> carries every pitch bend, and <code>E(t)</code> (breath) can drive <code>a1</code>, <code>w</code>, <code>m1</code>, <code>aTM</code>.</li>
+<li><strong>Aliasing.</strong> Anything with a <code>mod1</code> wrap (hard sync, supersaw, PWM) is discontinuous and aliases. The paper's fix is <strong>polyBLEP</strong>: add a 2nd-order correction polynomial to the two samples straddling each wrap. You know the phasor, so detecting the wrap is trivial; the paper even proposes treating "polyBLEP-smoothed <code>mod1</code>" as its own phaseshaper entity. The paper notes sinusoidal waveshaping alone (e.g. the waveslice) suppresses aliasing less well than polyBLEP. Oversampling is the brute-force alternative and combines well. Note that with an <em>extracted</em> phasor the phase increment <code>Ts = f0/fs</code> (needed by polyBLEP) comes from your tracker, or from differentiating <code>θ</code> — smooth it.</li>
+<li><strong>Nesting is the design language.</strong> Because every block takes a phase in <code>[0,1)</code> and returns one, you can chain them freely (e.g. <code>gripple</code> → <code>glin</code> → <code>mod1</code> → <code>gtri</code> → <code>cos</code>). In RNBO this is literally a set of small <code>gen</code>-style abstractions with one inlet/outlet, and new timbres come from re-ordering them.</li>
+<li><strong>Blending.</strong> Cross-fade or <em>sum</em> with the dry tuba. Because the synthesized waveform is phase-locked to the real fundamental, summing produces constructive reinforcement rather than the phasing you get from a free oscillator or a pitch-to-MIDI synth.</li>
+<li><strong>Sound-design angle:</strong> slowly morph <code>g</code> from identity to saw to pulse to synced under envelope control → the tuba "becomes" a synth on crescendos and comes back on decays.</li>
+</ul>
+<hr />
+<h2 id="3-analytic-signal-instantaneous-phase-transformations">3. Analytic-signal ("instantaneous phase") transformations</h2>
+<p>With <code>s_a = A·e^(jθ)</code> in hand, several operations become one-liners.</p>
+<h3 id="3a-phase-multiplication--harmonic-generation-chebyshev-without-polynomials">3a. Phase multiplication / harmonic generation (Chebyshev without polynomials)</h3>
+<pre><code>y_n = A(t) · cos(n · θ(t))</code></pre>
+<p><code>cos(nθ)</code> is exactly the <code>n</code>-th harmonic, phase-locked to the fundamental. Sum a set with weights <code>c_n</code> to draw an arbitrary harmonic spectrum — it's Chebyshev waveshaping (<code>T_n(cos θ) = cos nθ</code>) but computed in the phase domain, so it doesn't degrade when the input isn't a perfect sine. Make <code>c_n</code> depend on <code>E(t)</code> for dynamic brightness. Non-integer <code>n</code> gives inharmonic partials (<code>n = 1.5</code> = fifth, <code>n = 2.4</code> = bell).</p>
+<h3 id="3b-phase-division--phase-locked-sub-octaves-better-ring-mod-modulators">3b. Phase division → phase-locked sub-octaves (better ring-mod modulators)</h3>
+<p>Your sub-octave ring mod works well; the usual pain is that a free-running or <code>f0/2</code> oscillator drifts against the tuba, producing slow beating. Instead derive the modulator from <code>θ</code> itself:</p>
+<pre><code>m(t) = cos(θ(t) / 2)      (octave below, perfectly locked)</code></pre>
+<p>Because <code>θ/2</code> needs a consistent unwrapped phase, track wraps: increment a counter on each <code>θ</code> wrap and use <code>(θ_unwrapped) / 2 mod 2π</code>. The result is a modulator that follows every pitch bend and vibrato with zero lag and never beats. <code>cos(θ/3)</code>, <code>cos(θ/4)</code> give lower subharmonics; <code>cos(3θ/2)</code> gives a locked fifth. This also doubles as a <strong>clean octaver</strong>.</p>
+<h3 id="3c-frequency-shifting-bode--ssb">3c. Frequency shifting (Bode / SSB)</h3>
+<pre><code>y = s·cos(ω_s t) − ŝ·sin(ω_s t)       (shift up)    or with `+` (shift down)</code></pre>
+<p>Shifts every partial by a fixed Hz, not a ratio → harmonic spectra become inharmonic. Apply to the <em>full</em> tuba (not just the sine): a few Hz gives lush barber-pole phasing; tens of Hz gives clangorous metal; a shift of <code>−f0</code> folds the fundamental to DC and inverts the lower sidebands ("through-zero" gnarl). Making the shift a ratio of tracked <code>f0</code> (e.g. <code>−0.5·f0</code>) keeps the <em>type</em> of inharmonicity constant as the player moves.</p>
+<h3 id="3d-phase-warping--phase-distortion-of-the-analytic-signal">3d. Phase warping / "phase distortion of the analytic signal"</h3>
+<p>Reconstruct with a warped phase and the original amplitude:</p>
+<pre><code>y = A(t) · cos( θ(t) + h(θ(t)) )</code></pre>
+<p><code>h = I·sin(θ)</code> is PM with a locked modulator; <code>h = I·sin(2θ)</code> adds even harmonics only; <code>h = I·sign(sin θ)</code> gives phase-step distortion (very "digital"); <code>h = I·noise</code> gives phase noise (a breathy, granular blur that stays pitch-centered).</p>
+<h3 id="3e-amplitudephase-decoupling-and-swapping">3e. Amplitude/phase decoupling and swapping</h3>
+<p>Run <code>A(t)</code> and <code>θ(t)</code> through <em>different</em> processing and recombine:</p>
+<ul>
+<li>Compress or square <code>A(t)</code> while leaving <code>θ</code> alone → distortion that adds no new partials but changes the envelope's shape within each cycle (subtle "tube-y" sag).</li>
+<li>Hard-clip / quantize <code>A(t)</code> → tremolo-like buzz at the amplitude modulation rate.</li>
+<li>Use <code>A(t)</code> from the tuba to envelope a <em>different</em> phase source (e.g. <code>θ</code> from a second instrument or a slightly detuned copy) — cross-synthesis.</li>
+</ul>
+<h3 id="3f-rotating-ring-modulation">3f. Rotating ring modulation</h3>
+<p>Ring mod is <code>y = x·cos(ω_m t)</code>. With the analytic signal you can rotate instead of multiply: <code>y = Re{ s_a · e^(jψ(t)) }</code> where <code>ψ</code> is any phase trajectory. With <code>ψ = θ</code> you get <code>A·cos(2θ)</code> (octave up, locked); with <code>ψ = −θ</code> you get <code>A</code> (the envelope, DC); with <code>ψ = θ/2</code> you get the sub-octave. Sweeping <code>ψ</code> between these continuously morphs through the harmonic series without the intermodulation sidebands that classic RM produces — a smooth "harmonic slider".</p>
+<hr />
+<h2 id="4-waveshaping-on-the-sine-ified-signal-with-dynamics-decoupled">4. Waveshaping on the sine-ified signal (with dynamics decoupled)</h2>
+<p>Your <code>atan</code> and MS-20 stages act on the raw tuba, so harmonic <em>intermodulation</em> dominates (every pair of existing partials spawns sum/difference tones). Feeding them the <strong>normalized sine <code>u(t)</code></strong> instead changes the character completely: the output becomes a clean harmonic series with a shape set purely by the transfer function, and the drive is set by <em>you</em>, not the player's volume.</p>
+<ul>
+<li><strong>Chebyshev / polynomial shaping:</strong> <code>y = Σ c_n T_n(u)</code>. Deterministic harmonic content; <code>c_n</code> under envelope control. (Equivalent to §3a but cheaper if you don't need the Hilbert branch.)</li>
+<li><strong>Wavefolding (Buchla 259 / Serge / Lockhart):</strong> reflect the signal back when it crosses a threshold. On a near-sine, each additional fold adds a distinctive formant-like bump that sweeps with drive — the classic West-Coast sound, driven by the tuba. Because <code>u</code> is normalized, the "fold count" is a stable parameter; then re-map <code>E(t)</code> to the fold amount to hand control back to the player. Use an anti-derivative anti-aliased (ADAA) or oversampled folder; folding is very alias-prone.</li>
+<li><strong>Asymmetric / DC-offset shaping:</strong> add a bias before the shaper (<code>atan(g·(u + b))</code>) to produce even harmonics; modulate <code>b</code> with <code>cos(θ/2)</code> for octave-locked even/odd flicker.</li>
+<li><strong>Sync-and-shape:</strong> shape <code>u</code>, then multiply by the <em>original</em> tuba. The tuba's own harmonics ring-modulate against the newly created ones, but since both are locked to <code>f0</code>, the result stays harmonic — a way to get "harmonic-series-preserving" ring mod.</li>
+<li><strong>Parallel-band shaping:</strong> split into fundamental (<code>s</code>) and residual (<code>x − s</code>); shape each differently and re-sum. The fundamental branch can be brutal while the residual stays clean, preserving articulation and breath noise.</li>
+</ul>
+<hr />
+<h2 id="5-extensions-of-pitch-tracked-ring-modulation">5. Extensions of pitch-tracked ring modulation</h2>
+<p>Since RM with a sub-octave already sounds good, some near neighbours:</p>
+<ul>
+<li><strong>Locked modulators via phase division</strong> (§3b) — eliminates drift/beating.</li>
+<li><strong>Ratio sweeps as gesture:</strong> modulator at <code>r·f0</code> where <code>r</code> slides between "nice" values (0.5 → 0.75 → 1.5). With a locked phasor these are glitch-free.</li>
+<li><strong>Complex modulators:</strong> instead of a sine at <code>f0/2</code>, use a <em>waveform</em> (saw, pulse, or a <code>§2</code> phaseshaped wave) at <code>f0/2</code>. Each modulator harmonic contributes its own sideband set; a sub-octave <em>saw</em> modulator yields a full "sub-harmonic series" spectrum.</li>
+<li><strong>AM vs RM:</strong> <code>y = x·(1 + k·m)</code> keeps the carrier (original) present; <code>k</code> blends from tremolo-like to full RM.</li>
+<li><strong>Feedback AM (Kleimola et al.):</strong> <code>y[n] = x[n]·(1 + k·y[n−1])</code>. Cheap, stable for <code>k &lt; 1</code>, produces a sawtooth-like brightening whose harmonic slope tracks <code>k</code>. Works directly on the full tuba and is a rich, unusual sound on a bass instrument.</li>
+<li><strong>Sub-octave via AM squaring:</strong> <code>x · cos(θ/2)</code> vs. <code>x · u</code> (i.e. <code>A·cos²θ</code>, octave up + DC). Combined with a high-pass this is a very clean octave-up "harmoniser".</li>
+</ul>
+<hr />
+<h2 id="6-hybrid--meta-ideas">6. Hybrid / meta ideas</h2>
+<ul>
+<li><strong>Hard-sync a real oscillator to the player.</strong> Reset a synth oscillator's phase each time <code>φ</code> wraps (or on rising zero-crossings of <code>s</code>). Run the oscillator at <code>r·f0</code> with <code>r</code> non-integer for classic sync sweeps. This is the same as the <code>frac(nφ)</code> phaseshaper (§2) but works with any oscillator/wavetable you already have.</li>
+<li><strong>Spectral-envelope transfer (ModFM vocoder idea, Lazzarini &amp; Timoney 2011).</strong> Measure the tuba's spectral envelope (a few band followers or an LPC/cepstral fit) and impose it on a phaseshaped/FM synthetic version. The synthetic sound then keeps the tuba's formants and mute/hand-in-bell colour.</li>
+<li><strong>Chaotic-map distortion locked to <code>θ</code>.</strong> Iterate a logistic or tent map once per cycle (triggered on <code>φ</code> wrap) to produce a per-cycle random drive/bias value → "granular" distortion whose grain rate is exactly <code>f0</code>.</li>
+<li><strong>Multiband adaptive processing.</strong> Because you know <code>f0</code>, you can place band splits at <code>1.5·f0</code>, <code>3.5·f0</code>, … so each band contains a known set of harmonics; distort each band with a different technique. The bands slide with the pitch, so the treatment per harmonic is constant across the range.</li>
+</ul>
+<hr />
+<h2 id="7-general-implementation-checklist">7. General implementation checklist</h2>
+<ol type="1">
+<li><strong>Oversample</strong> any nonlinearity (FM/PM delay mod, folders, shapers, phase distortion). 2× minimum, 4× for folders and high-index FM; half-band FIR or a good elliptic IIR for decimation.</li>
+<li><strong>Normalize before modulating</strong> (<code>u = s / (A + ε)</code>) and <strong>re-map dynamics deliberately</strong> (<code>E(t)</code> → index/drive/mix/ratio).</li>
+<li><strong>Condition <code>f0</code></strong>: median filter the tracker, reject octave jumps, slew-limit, hold on silence, and derive all tuned parameters (ratios, delays, band edges) from the <em>conditioned</em> value.</li>
+<li><strong>Use the phasor, not the frequency, wherever possible.</strong> Anything derived from <code>θ(t)</code> is locked to the player and can't drift; anything derived from <code>f0</code> + a separate oscillator can.</li>
+<li><strong>PolyBLEP or oversample discontinuous phaseshapers</strong> (saw, sync, pulse).</li>
+<li><strong>Gate the wet path</strong> with <code>E(t)</code> and clamp <code>θ</code>-derived signals below a level threshold.</li>
+<li><strong>Keep a dry/parallel path.</strong> Most of these are most musical when summed with, not replacing, the tuba; because they're phase-locked, summing doesn't cause phasing.</li>
+<li><strong>Watch DC.</strong> Frequency shifting toward 0 Hz, <code>cos²</code>, and asymmetric shaping produce DC; high-pass the output (a few Hz, or at ~0.5·f0 tracked).</li>
+</ol>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>Kleimola, Lazzarini, Timoney, Välimäki — <em>Phaseshaping Oscillator Algorithms for Musical Sound Synthesis</em>, SMC 2010. <a href="https://mural.maynoothuniversity.ie/id/eprint/4100/">https://mural.maynoothuniversity.ie/id/eprint/4100/</a></li>
+<li>Lazzarini, Timoney, Lysaght — <em>Adaptive FM Synthesis</em>, DAFx 2007. <a href="https://mural.maynoothuniversity.ie/id/eprint/4166/">https://mural.maynoothuniversity.ie/id/eprint/4166/</a></li>
+<li>Lazzarini, Timoney — <em>Asymmetric-Spectra Methods for Adaptive FM Synthesis</em>, DAFx 2008. <a href="https://mural.maynoothuniversity.ie/id/eprint/4136/">https://mural.maynoothuniversity.ie/id/eprint/4136/</a></li>
+<li>Lazzarini, Timoney, Pekonen, Välimäki — <em>Adaptive Phase Distortion Synthesis</em>, DAFx 2009. <a href="https://mural.maynoothuniversity.ie/id/eprint/2335/">https://mural.maynoothuniversity.ie/id/eprint/2335/</a></li>
+<li>Lazzarini, Timoney — <em>Split-Sideband Synthesis</em>, ICMC 2008. <a href="https://mural.maynoothuniversity.ie/id/eprint/4199/">https://mural.maynoothuniversity.ie/id/eprint/4199/</a></li>
+<li>Lazzarini, Timoney — <em>The ModFM Synthesis Vocoder</em>, ICMC 2011. <a href="https://mural.maynoothuniversity.ie/id/eprint/4117/">https://mural.maynoothuniversity.ie/id/eprint/4117/</a></li>
+<li>Kleimola, Lazzarini, Välimäki, Timoney — <em>Feedback Amplitude Modulation Synthesis</em>, EURASIP J. Adv. Signal Proc. 2011. <a href="https://link.springer.com/article/10.1155/2011/434378">https://link.springer.com/article/10.1155/2011/434378</a></li>
+<li>Esqueda, Pöntynen, Parker, Bilbao — <em>Virtual Analog Models of the Lockhart and Serge Wavefolders</em>, Applied Sciences 2017. <a href="https://www.mdpi.com/2076-3417/7/12/1328">https://www.mdpi.com/2076-3417/7/12/1328</a></li>
+<li>J. O. Smith — <em>Hilbert Transform / Analytic Signal</em> primer, SASP. <a href="https://www.dsprelated.com/freebooks/sasp/Primer_Hilbert_Transform_Theory.html">https://www.dsprelated.com/freebooks/sasp/Primer_Hilbert_Transform_Theory.html</a></li>
+</ul>
+<h2 id="references">Attributions</h2>
+
+Many thanks to isabel~ for the <a href="https://discord.com/channels/289378508247924738/289378711533387777/1549600603162812466">leads</a>.
+
+Initial prompt to Claude Fable 5.1 via freebuff: 
+
+I'm seeking novel ways to add distortion effects to the tuba's sound. 
+
+I already have oversampled atan and ms20 distortion effects. 
+
+I've found that pitch-tracking the tuba, and using a bell eq to boost the fundamental anywhere from 12 to 48 dB, allows the tuba's sound to approximate a sine wave, which can be used for frequency modulation, phase modulation, angle modulation, phase distortion, etc. Some terms that may be relevant are "analytic signals" and "instantaneous phase/amplitude". This paper is relevant as well: https://mural.maynoothuniversity.ie/id/eprint/4100/1/SMC2010.pdf 
+
+I've also found that pitch-tracking ring-mod sounds quite good too, with the modulator being an octave below the fundamental. 
+
+Create a .md file describing a few different approaches to adding distortion effects to the tuba's sound. I'm working in software called RNBO in Max/MSP, but keep the descriptions generally applicable. 
+
+    </article>
+  </main>
+</div>
+<script>
+  // Wrap tables for horizontal scrolling on narrow screens.
+  document.querySelectorAll('article table').forEach(function (t) {
+    var w = document.createElement('div');
+    w.className = 'table-wrap';
+    t.parentNode.insertBefore(w, t);
+    w.appendChild(t);
+  });
+
+  // Scroll-spy: highlight the sidebar entry for the heading currently in view.
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.sidebar a[href^="#"]'));
+  var byId = {};
+  links.forEach(function (a) { byId[decodeURIComponent(a.getAttribute('href').slice(1))] = a; });
+  var headings = Array.prototype.slice.call(document.querySelectorAll('article h2[id], article h3[id]'))
+    .filter(function (h) { return byId[h.id]; });
+
+  function setActive(id) {
+    links.forEach(function (a) { a.classList.remove('active'); });
+    var a = byId[id];
+    if (!a) return;
+    a.classList.add('active');
+    // Only keep the active entry in view when the sidebar is its own scrolling
+    // column (the sticky desktop layout). On mobile it sits in the normal
+    // document flow at the top of the page, so scrolling it here would also
+    // drag the window back to the top on every scroll-spy update.
+    if (!window.matchMedia('(min-width: 901px)').matches) return;
+    var nav = a.closest('nav');
+    var r = a.getBoundingClientRect(), nr = nav.getBoundingClientRect();
+    if (r.top < nr.top + 40 || r.bottom > nr.bottom - 40) {
+      // Scroll the nav itself instead of scrollIntoView, which would also
+      // scroll the window.
+      nav.scrollTop += r.top - nr.top - (nav.clientHeight - r.height) / 2;
+    }
+  }
+
+  function onScroll() {
+    var offset = 120, current = headings[0];
+    for (var i = 0; i < headings.length; i++) {
+      if (headings[i].getBoundingClientRect().top - offset <= 0) current = headings[i];
+      else break;
+    }
+    if (current) setActive(current.id);
+  }
+  // Background hue cycle: one full trip around the colour wheel from top to bottom.
+  var HUE_START = 225, HUE_SPAN = 360, root = document.documentElement, hueFrame = null;
+  function updateHue() {
+    hueFrame = null;
+    var max = root.scrollHeight - window.innerHeight;
+    var f = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    root.style.setProperty('--hue', ((HUE_START + f * HUE_SPAN) % 360).toFixed(1));
+  }
+  function onScrollAll() {
+    onScroll();
+    if (hueFrame === null) hueFrame = requestAnimationFrame(updateHue);
+  }
+  window.addEventListener('scroll', onScrollAll, { passive: true });
+  window.addEventListener('resize', onScrollAll, { passive: true });
+  onScrollAll();
+</script>
+</body>
+</html>

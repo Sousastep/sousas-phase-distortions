@@ -1,0 +1,2288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RNBO codebox~ Tuba Effects — Parameter Reference</title>
+    <style>
+        /* ===== Reset & Base ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #161618;
+            --card-bg: #1e1e22;
+            --text: #e4e4e7;
+            --text-muted: #a1a1aa;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --border: #52525b;
+            --code-bg: #2a2a30;
+            --warn-bg: #3d3520;
+            --warn-border: #a38d2a;
+            --section-accent: #3b82f6;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
+            --radius: 6px;
+        }
+
+        body {
+            font-family: "Charter", "Georgia", "Times New Roman", serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== Layout ===== */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 6rem;
+        }
+
+        /* ===== Typography ===== */
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 0.75rem;
+            color: #f0f0f5;
+            letter-spacing: -0.02em;
+        }
+
+        h2, h3, h4 {
+            scroll-margin-top: 1.5rem;
+        }
+        h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-top: 3rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.35rem;
+            border-bottom: 2px solid var(--border);
+            color: #e4e4e7;
+            letter-spacing: -0.01em;
+            position: relative;
+        }
+        h2 .anchor-link, h3 .anchor-link, h4 .anchor-link {
+            opacity: 0;
+            font-size: 0.75em;
+            margin-left: 0.4rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-bottom: none;
+            transition: opacity 0.15s;
+            vertical-align: middle;
+        }
+        h2:hover .anchor-link,
+        h3:hover .anchor-link,
+        h4:hover .anchor-link {
+            opacity: 1;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+            color: #d4d4d8;
+        }
+
+        h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.4rem;
+            color: #c4c4cc;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            font-weight: 700;
+        }
+
+        em {
+            font-style: italic;
+        }
+
+        /* ===== Links ===== */
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.15s;
+        }
+        a:hover {
+            border-bottom-color: var(--accent);
+        }
+        a:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        /* ===== Hero / header area ===== */
+        .header-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 2.5rem 0 2rem;
+            font-size: 0.92rem;
+            color: var(--text-muted);
+        }
+        .header-meta .meta-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            line-height: 1.5;
+        }
+        .header-meta .meta-icon {
+            flex-shrink: 0;
+            width: 1.8rem;
+            height: 1.8rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            margin-top: 0.05rem;
+        }
+        .meta-icon.project  { background: #1e3a5f; color: #3b82f6; }
+        .meta-icon.goal    { background: #3d2a15; color: #f59e0b; }
+        .meta-icon.chain   { background: #1a3d2e; color: #34d399; }
+        .header-meta .meta-label {
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #a1a1aa;
+            margin-bottom: 0.15rem;
+        }
+        .header-meta .meta-body {}
+        .header-meta .meta-body p {
+            margin-bottom: 0;
+        }
+
+        /* ===== Horizontal rule ===== */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+
+        /* ===== Lists ===== */
+        ul, ol {
+            margin: 0.75rem 0 1rem 1.5rem;
+        }
+        ul li, ol li {
+            margin-bottom: 0.5rem;
+            padding-left: 0.25rem;
+        }
+        ul ul, ol ul, ul ol, ol ol {
+            margin-top: 0.4rem;
+            margin-bottom: 0.4rem;
+        }
+        ul li::marker {
+            color: #666;
+        }
+
+        /* ===== Inline code ===== */
+        code {
+            font-family: "SF Mono", "Fira Code", "Consolas", "Monaco", monospace;
+            font-size: 0.88em;
+            background: var(--code-bg);
+            padding: 0.15em 0.4em;
+            border-radius: 3px;
+            color: #d4d4d8;
+        }
+
+        /* ===== Math / LaTeX display ===== */
+        .math-inline {
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+            background: #2d2d33;
+            padding: 0.05em 0.2em;
+            border-radius: 2px;
+        }
+
+        /* ===== Blockquote (warning notes) ===== */
+        blockquote {
+            margin: 1rem 0;
+            padding: 0.75rem 1rem;
+            background: var(--warn-bg);
+            border-left: 4px solid var(--warn-border);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-size: 0.93rem;
+            color: #e5c94d;
+        }
+        blockquote p {
+            margin-bottom: 0.5rem;
+        }
+        blockquote p:last-child {
+            margin-bottom: 0;
+        }
+        blockquote strong {
+            color: #f5d76e;
+        }
+
+        /* ===== Tables ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 1.25rem;
+            font-size: 0.9rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        thead {
+            background: #2d2d33;
+        }
+        th {
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #a1a1aa;
+            text-align: left;
+            padding: 0.6rem 0.85rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.55rem 0.85rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+            line-height: 1.55;
+        }
+        tbody tr:hover {
+            background: #2d2d33;
+        }
+        td:first-child, th:first-child {
+            white-space: nowrap;
+        }
+
+        /* ===== Card sections for each major candidate topology ===== */
+        .topology-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem 1.5rem;
+            margin: 1.25rem 0;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.15s;
+        }
+        .topology-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .topology-card h4 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            color: #e4e4e7;
+        }
+        .topology-card h4 .card-num {
+            color: var(--accent);
+            margin-right: 0.3rem;
+        }
+        .topology-card .field-label {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            margin-right: 0.3rem;
+            min-width: 5rem;
+        }
+        .topology-card p {
+            margin-bottom: 0.5rem;
+        }
+        .topology-card ul {
+            margin-top: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ===== Questions / call-out boxes ===== */
+        .questions-box {
+            background: #1e2a3d;
+            border: 1px solid #2d3d5f;
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+        }
+        .questions-box h4 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: #c4d4e4;
+        }
+        .questions-box ol {
+            margin-bottom: 0;
+        }
+        .questions-box ol li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ===== Tier list styles ===== */
+        .tier-label {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.15em 0.6em;
+            border-radius: 3px;
+            margin-right: 0.5rem;
+        }
+        .tier-1 { background: #1a3d2e; color: #4ade80; }
+        .tier-2 { background: #1a2d4d; color: #3b82f6; }
+        .tier-3 { background: #3d2a15; color: #f59e0b; }
+        .tier-4 { background: #3d1a3d; color: #c084fc; }
+
+        /* ===== Experiment sequence steps ===== */
+        .step-list {
+            counter-reset: step;
+            list-style: none;
+            margin-left: 0;
+        }
+        .step-list li {
+            counter-increment: step;
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .step-list li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: -0.1rem;
+            width: 1.6rem;
+            height: 1.6rem;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        /* ===== Status badge ===== */
+        .status-badge {
+            display: inline-block;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            background: var(--code-bg);
+            padding: 0.2em 0.7em;
+            border-radius: 3px;
+            margin-top: 2rem;
+        }
+
+        /* ===== Footer ===== */
+        .footer-rule {
+            margin-top: 3rem;
+            opacity: 0.5;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 640px) {
+            .container {
+                padding: 1.5rem 1rem 4rem;
+            }
+            h1 {
+                font-size: 1.7rem;
+            }
+            h2 {
+                font-size: 1.25rem;
+            }
+            .topology-card {
+                padding: 1rem;
+            }
+            .header-meta {
+                gap: 0.75rem;
+            }
+            .header-meta .meta-item {
+                gap: 0.5rem;
+            }
+        }
+
+        /* ===== TOC Sidebar ===== */
+        .page-wrapper {
+            display: flex;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .container {
+            flex: 1;
+            min-width: 0;
+        }
+        .toc-sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            order: 1;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 3rem 1rem 3rem 1.5rem;
+            border-left: 1px solid var(--border);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            scrollbar-width: thin;
+        }
+        .toc-toggle {
+            display: none;
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 0.65rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            z-index: 1000;
+            transition: background 0.15s;
+        }
+        .toc-toggle:hover {
+            background: var(--accent-hover);
+        }
+        .toc-sidebar.mobile-open {
+            transform: translateX(0);
+        }
+        .toc-nav-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .toc-nav-list li {
+            margin-bottom: 0;
+            padding-left: 0;
+        }
+        .toc-nav-list a {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.3rem 0;
+            border-bottom: none;
+            border-radius: 3px;
+            line-height: 1.35;
+            transition: color 0.15s, background 0.15s;
+        }
+        .toc-nav-list a:hover {
+            color: var(--accent);
+            background: #2d2d3d;
+        }
+        .toc-nav-list a.active {
+            color: var(--accent);
+            font-weight: 700;
+            background: #1e2d4d;
+        }
+        .toc-h2 { font-weight: 600; font-size: 0.88rem; margin-top: 0.65rem; color: #e4e4e7; }
+        .toc-h3 { padding-left: 1rem; font-size: 0.82rem; }
+        .toc-h4 { padding-left: 2rem; font-size: 0.78rem; }
+
+        .toc-sidebar::-webkit-scrollbar { width: 4px; }
+        .toc-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        .toc-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 998;
+        }
+
+        @media (max-width: 1000px) {
+            .page-wrapper { flex-direction: column; }
+            .toc-sidebar {
+                position: fixed;
+                top: 0; right: 0;
+                background: var(--bg);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                z-index: 999;
+                box-shadow: var(--shadow-md);
+            }
+            .toc-toggle { display: block; }
+            .toc-backdrop.show { display: block; }
+        }
+
+        /* ===== Print ===== */
+        @media print {
+            .toc-sidebar, .toc-toggle, .toc-backdrop { display: none !important; }
+            .page-wrapper { display: block; margin: 0; max-width: 100%; }
+            body {
+                background: #fff;
+                font-size: 11pt;
+                line-height: 1.6;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            .topology-card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            a {
+                color: var(--text);
+                text-decoration: underline;
+            }
+        }
+
+        /* ===== Additions for the RNBO parameter reference ===== */
+        .topology-card h3 {
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+            color: #e4e4e7;
+        }
+        .topology-card h3 .card-num {
+            color: var(--accent);
+            margin-right: 0.3rem;
+        }
+        .param-count {
+            display: inline-block;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 0.1em 0.5em;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .block-label {
+            display: inline-block;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin: 1rem 0 0.25rem;
+        }
+        .io-list {
+            margin: 0.35rem 0 0.5rem 1.25rem;
+            font-size: 0.94rem;
+        }
+        .io-list li {
+            margin-bottom: 0.3rem;
+        }
+        .topology-card table {
+            margin: 0.5rem 0 0.25rem;
+            font-size: 0.87rem;
+        }
+        .topology-card table td:first-child,
+        .topology-card table th:first-child {
+            white-space: normal;
+            width: 17%;
+        }
+        .param-name {
+            color: #93c5fd;
+            background: transparent;
+            padding: 0;
+            font-size: 0.85rem;
+        }
+        .default-note {
+            color: var(--text-muted);
+        }
+        .param-notes {
+            margin: 0.35rem 0 0 1rem;
+            font-size: 0.88rem;
+        }
+        .param-notes li {
+            margin-bottom: 0.2rem;
+        }
+        .glance-table td:first-child {
+            width: 3.5rem;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .route-list {
+            list-style: none;
+            margin: 0.35rem 0 0.5rem;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+        .route-list li {
+            position: relative;
+            margin-bottom: 0.35rem;
+            padding-left: 0;
+            line-height: 1.55;
+        }
+        .route-chip {
+            display: inline-block;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.05em 0.4em;
+            border-radius: 3px;
+            margin-right: 0.45rem;
+            vertical-align: 0.1em;
+        }
+        .route-out .route-chip { background: #1a3d2e; color: #4ade80; }
+        .route-in  .route-chip { background: #1a2d4d; color: #60a5fa; }
+        .route-see .route-chip { background: #3d2a15; color: #f59e0b; }
+        .route-list code { font-size: 0.82em; }
+    </style>
+</head>
+<body>
+<button class="toc-toggle" id="tocToggle">☰ Contents</button>
+<div class="toc-backdrop" id="tocBackdrop"></div>
+<div class="page-wrapper">
+    <nav class="toc-sidebar" id="tocSidebar">
+        <ul class="toc-nav-list">
+            <li><a href="#sec-about" class="toc-h2">About This Reference</a></li>
+            <li><a href="#sec-glance" class="toc-h2">Effects at a Glance</a></li>
+            <li><a href="#sec-routing" class="toc-h2">Routing Map</a></li>
+            <li><a href="#sec-group-00" class="toc-h2">Trackers, Analyzers &amp; Front-End</a></li>
+            <li><a href="#sec-00" class="toc-h3">00 · tuba_freq_tracker</a></li>
+            <li><a href="#sec-00b" class="toc-h3">00b · tuba_transient_valve_detector</a></li>
+            <li><a href="#sec-00c" class="toc-h3">00c · tuba_4harmonic_IFT_analyzer</a></li>
+            <li><a href="#sec-00d" class="toc-h3">00d · tuba_4op_modfm_resynthesizer</a></li>
+            <li><a href="#sec-group-fx" class="toc-h2">Single-Purpose Effects (01–12)</a></li>
+            <li><a href="#sec-01" class="toc-h3">01 · harmonic_isolator</a></li>
+            <li><a href="#sec-02" class="toc-h3">02 · allpass_disperser</a></li>
+            <li><a href="#sec-03" class="toc-h3">03 · coef_mod_allpass_pd</a></li>
+            <li><a href="#sec-04" class="toc-h3">04 · hilbert_phasor_sync</a></li>
+            <li><a href="#sec-05" class="toc-h3">05 · phaseshaper_supersaw_tri</a></li>
+            <li><a href="#sec-06" class="toc-h3">06 · asymmetric_delay_adfm</a></li>
+            <li><a href="#sec-07" class="toc-h3">07 · adaptive_split_sideband</a></li>
+            <li><a href="#sec-08" class="toc-h3">08 · suboctave_phase_ringmod</a></li>
+            <li><a href="#sec-09" class="toc-h3">09 · pitch_tracked_comb_resonator</a></li>
+            <li><a href="#sec-10" class="toc-h3">10 · phasor_synced_comb_flanger</a></li>
+            <li><a href="#sec-11" class="toc-h3">11 · bode_ssb_freq_shifter</a></li>
+            <li><a href="#sec-12" class="toc-h3">12 · adaa_chebyshev_wavefolder</a></li>
+            <li><a href="#sec-group-inst" class="toc-h2">Performance Instruments (13–18)</a></li>
+            <li><a href="#sec-13" class="toc-h3">13 · inst_riddim_wobble_titan</a></li>
+            <li><a href="#sec-14" class="toc-h3">14 · inst_metallic_comb_growler</a></li>
+            <li><a href="#sec-15" class="toc-h3">15 · inst_split_sideband_morph_synth</a></li>
+            <li><a href="#sec-16" class="toc-h3">16 · inst_phaseshaper_matrix_lead</a></li>
+            <li><a href="#sec-17" class="toc-h3">17 · inst_cyber_tuba_tearout_engine</a></li>
+            <li><a href="#sec-18" class="toc-h3">18 · inst_harmonic_cannon_polybass</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+    <h1>RNBO codebox~ Tuba Effects<br>Parameter Reference</h1>
+
+    <div class="header-meta">
+        <div class="meta-item">
+            <div class="meta-icon project">◆</div>
+            <div class="meta-body">
+                <div class="meta-label">Project</div>
+                <p>Twenty-two stereo <code>codebox~</code> processors for performing live dubstep and riddim on an amplified tuba: pitch/phase trackers and analyzers, twelve single-purpose phase-dispersion / phase-distortion / FM / comb effects, and six playable instruments.</p>
+            </div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-icon goal">◇</div>
+            <div class="meta-body">
+                <div class="meta-label">Purpose</div>
+                <p>A single-page parameter reference: for every effect, its inlets and outlets and each parameter&rsquo;s range, taper, and musical function in conventional units (Hz, ms, dB).</p>
+            </div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-icon chain">→</div>
+            <div class="meta-body">
+                <div class="meta-label">Signal Chain</div>
+                <p>Tuba (mic/DI) → <strong>trackers &amp; analyzers (00–00d)</strong> → <strong>one or more of 01–12</strong> → optional wobble filter → out &nbsp;|&nbsp; or a single <strong>instrument (13–18)</strong> end-to-end. Pitch arrives on <code>in3</code> (from <code>fluid.pitch~</code> or <code>00_tuba_freq_tracker</code>); a 1-bar audio-rate phasor arrives on <code>in3</code>/<code>in4</code> where a rhythm is used.</p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- ===== ABOUT ===== -->
+    <h2 id="sec-about">About This Reference <a href="#sec-about" class="anchor-link">#</a></h2>
+
+    <p>Each effect below is presented with its <strong>overview</strong>, its <strong>inlets &amp; outlets</strong>, and a table of its parameters. Within each parameter table you get:</p>
+
+    <ul>
+        <li><strong>Range</strong> — the full span in conventional musical units, including the default where the source file specifies one.</li>
+        <li><strong>Taper</strong> — how the control value maps to the underlying DSP quantity (linear, exponential, power curve, dB-to-linear, etc.), so you know where the knob&rsquo;s resolution is concentrated.</li>
+        <li><strong>Function</strong> — what the parameter actually does to the sound or to the signal flow. Multi-zone controls list their zones.</li>
+    </ul>
+
+    <p><strong>Conventions used throughout:</strong></p>
+    <ul>
+        <li><code>f0</code> is the tracked tuba fundamental in Hz; <code>fs</code> is the sample rate.</li>
+        <li>Effects <strong>without</strong> a pitch inlet are 10 (its <code>in3</code> is the 1-bar phasor) and 12. In 02, 05, 08, and 11 the pitch inlet is <strong>optional</strong> — it only tunes an internal detail when connected.</li>
+        <li>Effects with a rhythmic section take a 1-bar phasor and fall back to an internal ~0.5&nbsp;Hz LFO when it is unpatched.</li>
+        <li>All parameters are smoothed/slewed internally; sweep-heavy controls quote the slew time (typically 5&nbsp;ms, 12&nbsp;ms for waveguide pitch).</li>
+    </ul>
+
+    <h2 id="sec-glance">Effects at a Glance <a href="#sec-glance" class="anchor-link">#</a></h2>
+
+    <table class="glance-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Effect</th>
+                <th>Category</th>
+                <th>Params</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>00</td><td><strong>tuba_freq_tracker</strong></td><td>Pitch / phasor tracker (YIN + IFT + PLL)</td><td>4</td></tr>
+            <tr><td>00b</td><td><strong>tuba_transient_valve_detector</strong></td><td>Tongue-attack / valve-click transient detector</td><td>4</td></tr>
+            <tr><td>00c</td><td><strong>tuba_4harmonic_IFT_analyzer</strong></td><td>4-harmonic instantaneous frequency &amp; amplitude analyzer</td><td>4</td></tr>
+            <tr><td>00d</td><td><strong>tuba_4op_modfm_resynthesizer</strong></td><td>4-op ModFM / phaseshaper vocoder resynthesizer</td><td>8</td></tr>
+            <tr><td>01</td><td><strong>harmonic_isolator</strong></td><td>Pitch-tracked partial isolation → unit sine</td><td>4</td></tr>
+            <tr><td>02</td><td><strong>allpass_disperser</strong></td><td>32-stage allpass phase dispersion</td><td>4</td></tr>
+            <tr><td>03</td><td><strong>coef_mod_allpass_pd</strong></td><td>Coefficient-modulated allpass phase distortion</td><td>4</td></tr>
+            <tr><td>04</td><td><strong>hilbert_phasor_sync</strong></td><td>Player-driven soft/hard sync phaseshaping</td><td>4</td></tr>
+            <tr><td>05</td><td><strong>phaseshaper_supersaw_tri</strong></td><td>JP-8000 triangle modulation &amp; ripple supersaw</td><td>4</td></tr>
+            <tr><td>06</td><td><strong>asymmetric_delay_adfm</strong></td><td>Asymmetric delay-based adaptive FM</td><td>4</td></tr>
+            <tr><td>07</td><td><strong>adaptive_split_sideband</strong></td><td>Adaptive split-sideband synthesis (4 quadrants)</td><td>4</td></tr>
+            <tr><td>08</td><td><strong>suboctave_phase_ringmod</strong></td><td>Phase-divided sub-octave ring mod + feedback AM</td><td>4</td></tr>
+            <tr><td>09</td><td><strong>pitch_tracked_comb_resonator</strong></td><td>Pitch-tracked waveguide comb resonator</td><td>4</td></tr>
+            <tr><td>10</td><td><strong>phasor_synced_comb_flanger</strong></td><td>Tempo-synced rhythmic comb / flange</td><td>4</td></tr>
+            <tr><td>11</td><td><strong>bode_ssb_freq_shifter</strong></td><td>Bode / single-sideband frequency shifter</td><td>4</td></tr>
+            <tr><td>12</td><td><strong>adaa_chebyshev_wavefolder</strong></td><td>ADAA1 wavefolder + Chebyshev harmonic generator</td><td>4</td></tr>
+            <tr><td>13</td><td><strong>inst_riddim_wobble_titan</strong></td><td>Instrument — joystick riddim wobble synth</td><td>8</td></tr>
+            <tr><td>14</td><td><strong>inst_metallic_comb_growler</strong></td><td>Instrument — metallic talking-pipe comb growler</td><td>8</td></tr>
+            <tr><td>15</td><td><strong>inst_split_sideband_morph_synth</strong></td><td>Instrument — 2D vector split-sideband morph synth</td><td>8</td></tr>
+            <tr><td>16</td><td><strong>inst_phaseshaper_matrix_lead</strong></td><td>Instrument — 3-voice phaseshaper matrix lead</td><td>8</td></tr>
+            <tr><td>17</td><td><strong>inst_cyber_tuba_tearout_engine</strong></td><td>Instrument — machine-gun tearout engine</td><td>8</td></tr>
+            <tr><td>18</td><td><strong>inst_harmonic_cannon_polybass</strong></td><td>Instrument — pitch-tracked multiband harmonic cannon</td><td>8</td></tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <!-- ===== ROUTING MAP ===== -->
+    <h2 id="sec-routing">Routing Map <a href="#sec-routing" class="anchor-link">#</a></h2>
+
+    <p>Two rules cover almost every patch:</p>
+
+    <ol>
+        <li><strong>Audio:</strong> every effect takes stereo audio on <code>in1</code>/<code>in2</code> and returns stereo audio on <code>out1</code>/<code>out2</code>, so any effect can feed any other. The exceptions worth naming are <code>01 harmonic_isolator</code>, which is the preferred audio source for 04, 05, and 12, and the instruments 13–18, which take the raw tuba directly.</li>
+        <li><strong>Pitch:</strong> every pitch-aware effect reads tracked f0 on <code>in3</code>, normally from <code>out1</code> of <code>00 tuba_freq_tracker</code> (or <code>fluid.pitch~</code>). Effects without a pitch inlet are 10 and 12; in 02, 05, 08, and 11 the inlet is optional.</li>
+    </ol>
+
+    <p>Bus by bus:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Bus</th>
+                <th>Producer (outlet)</th>
+                <th>Consumers (inlet)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Audio</strong></td>
+                <td>Tuba mic/DI; <code>out1 / out2</code> of any effect</td>
+                <td><code>in1 / in2</code> of any other effect; 01 is the named source for 04, 05, and 12</td>
+            </tr>
+            <tr>
+                <td><strong>Tracked f0</strong></td>
+                <td><a href="#sec-00">00 tuba_freq_tracker</a> <code>out1</code>, or <code>fluid.pitch~</code></td>
+                <td><code>in3</code> of 00c, 01, 03, 04, 06, 07, 09, 13–18; optional <code>in3</code> of 02, 05, 08, 11</td>
+            </tr>
+            <tr>
+                <td><strong>Pitch confidence</strong></td>
+                <td><a href="#sec-00">00</a> <code>out2</code></td>
+                <td><a href="#sec-00b">00b</a> <code>in3</code></td>
+            </tr>
+            <tr>
+                <td><strong>Note-transition freeze gate</strong></td>
+                <td><a href="#sec-00b">00b</a> <code>out3</code></td>
+                <td><a href="#sec-00c">00c</a> <code>in4</code></td>
+            </tr>
+            <tr>
+                <td><strong>Transient mod envelope</strong></td>
+                <td><a href="#sec-00b">00b</a> <code>out2</code> (pulses on <code>out1</code>, <code>out4</code>)</td>
+                <td>filter cutoff, FM index, comb sweep, or allpass dispersion — anywhere in the host patch</td>
+            </tr>
+            <tr>
+                <td><strong>Harmonic f / A / centroid</strong></td>
+                <td><a href="#sec-00c">00c</a> <code>out1..out9</code></td>
+                <td><a href="#sec-00d">00d</a> <code>in1..in9</code> (direct 1-to-1 patch); <code>out9</code> also suits any brassiness-driven cutoff or index</td>
+            </tr>
+            <tr>
+                <td><strong>1-bar phasor</strong></td>
+                <td>Host / sequencer clock</td>
+                <td><a href="#sec-00d">00d</a> <code>in10</code>, <a href="#sec-05">05</a> <code>in4</code>, <a href="#sec-10">10</a> <code>in3</code>, and <code>in4</code> of <a href="#sec-13">13</a> through <a href="#sec-18">18</a></td>
+            </tr>
+            <tr>
+                <td><strong>Unit sine</strong></td>
+                <td><a href="#sec-01">01</a> <code>out3 / out4</code>; <a href="#sec-00">00</a> <code>out4</code></td>
+                <td>downstream carrier / modulator inlets</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Each effect card below repeats its own slice of this map under <strong>Signal Routing</strong>, with links in both directions.</p>
+
+    <hr>
+
+    <!-- ===== GROUP 00 ===== -->
+    <h2 id="sec-group-00">Trackers, Analyzers &amp; Analysis Front-End <a href="#sec-group-00" class="anchor-link">#</a></h2>
+
+    <p>These four processors sit <em>ahead</em> of the effects. They turn the tuba into machine-readable control signals — tracked fundamental, confidence, phase-locked phasor, transient triggers, per-harmonic amplitude and instantaneous frequency — and 00d can be patched 1-to-1 from 00c to resynthesize from them.</p>
+
+    <!-- 00 -->
+    <div class="topology-card">
+        <h3 id="sec-00"><span class="card-num">00</span> tuba_freq_tracker <span class="param-count">4 parameters</span> <a href="#sec-00" class="anchor-link">#</a></h3>
+        <p>A custom Tuba-Specialized Hybrid Pitch &amp; Phasor Tracker that outperforms generic FFT-based YinFFT (<code>fluid.pitch~</code>) for live low-brass dubstep performance by uniting three complementary DSP architectures inside a single RNBO <code>codebox~</code>:</p>
+        <ol>
+            <li><strong>4x-Decimated Recursive Sliding YIN (CMNDF):</strong> Computes the Cumulative Mean Normalized Difference Function continuously in the time domain with parabolic sub-sample interpolation and a 3-point transient median filter, updating every 32 samples (0.66 ms) instead of waiting for a 2048/4096-sample FFT frame.</li>
+            <li><strong>Instantaneous Frequency Tracking (IFT):</strong> Isolates the tuba&rsquo;s fundamental via a dual-stage adaptive SVF bandpass filter tracked to the YIN anchor, computes the analytic signal s<sub>a</sub>(t) = A(t)·e<sup>j·θ(t)</sup> via a 4-stage quadrature Hilbert transform, and differentiates the unwrapped phase dθ/dt on <em>every</em> sample (zero window latency).</li>
+            <li><strong>Phase-Locked Loop (PLL) Fusion:</strong> Uses YIN as an unbreakable octave/harmonic anchor while using IFT to track fast lip bends, vibrato, and glissandi within a ±18% window, holding the last valid pitch cleanly on note releases.</li>
+        </ol>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo (or Mono on in1) Tuba Audio Input</li>
+            <li><code>in3</code> — Optional External Pitch Hint in Hz (if <code>fluid.pitch~</code> is patched here, blends with the internal YIN anchor for redundant lock)</li>
+            <li><code>out1</code> — Tracked Fundamental Pitch f0 in Hz (patch directly into in3 of effects 01–18!)</li>
+            <li><code>out2</code> — Pitch Confidence / Periodicity [0.0 to 1.0]</li>
+            <li><code>out3</code> — Phase-Locked Tuba Phasor [0.0 to 1.0) (phase-locked sawtooth ramp at f0)</li>
+            <li><code>out4</code> — Pure Phase-Locked Fundamental Sine Wave [−1.0 to 1.0] (scaled by confidence)</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in1 / in2</code> ← tuba mic/DI; <code>in3</code> ← an optional external pitch hint from <code>fluid.pitch~</code> or another tracker&rsquo;s <code>out1</code>. This is the head of the chain — nothing upstream.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1</code> (tracked f0) → <code>in3</code> of <a href="#sec-00c">00c</a>, <a href="#sec-01">01</a>, <a href="#sec-03">03</a>, <a href="#sec-04">04</a>, <a href="#sec-06">06</a>, <a href="#sec-07">07</a>, <a href="#sec-09">09</a>, <a href="#sec-13">13</a>, <a href="#sec-14">14</a>, <a href="#sec-15">15</a>, <a href="#sec-16">16</a>, <a href="#sec-17">17</a>, and <a href="#sec-18">18</a>; optionally <code>in3</code> of <a href="#sec-02">02</a>, <a href="#sec-05">05</a>, <a href="#sec-08">08</a>, and <a href="#sec-11">11</a>.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out2</code> (pitch confidence) → <code>in3</code> of <a href="#sec-00b">00b tuba_transient_valve_detector</a>.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out4</code> (phase-locked sine) → any carrier/modulator inlet, as an alternative to <a href="#sec-01">01</a> <code>out3 / out4</code>.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">min_freq_hz</code></td>
+                    <td>24.0 – 120.0 Hz <span class="default-note">(default 28.0 Hz, covering down to Pedal Bb0 = 29.14 Hz)</span></td>
+                    <td>Direct frequency in Hz.</td>
+                    <td>Sets the longest lag boundary of the YIN autocorrelation search window. Raising this to ~38 Hz when not playing pedal notes further reduces latency and CPU.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">max_freq_hz</code></td>
+                    <td>150.0 – 700.0 Hz <span class="default-note">(default 420.0 Hz, covering up to high G4/Ab4)</span></td>
+                    <td>Direct frequency in Hz.</td>
+                    <td>Sets the shortest lag boundary of the YIN search window and upper clamp of the tracker, preventing high brass lip buzz or valve clicks from triggering false high-frequency jumps.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">IFT_speed</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0.0 = Pure Median-Filtered YIN, 1.0 = Full Zero-Latency IFT Instantaneous Frequency)</span></td>
+                    <td>Linear crossfade coupled with tracking time-constant reduction (from 10 ms down to 1.5 ms).</td>
+                    <td>Controls how aggressively the zero-latency Hilbert phase differentiator (IFT) overrides the YIN lag estimator during fast lip slurs, pitch bends, and vibrato.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">gate_thresh_db</code></td>
+                    <td>−60.0 – −18.0 dB <span class="default-note">(default −42.0 dB)</span></td>
+                    <td>Logarithmic dB-to-linear RMS threshold (<code>dbtoa</code>).</td>
+                    <td>Freezes the tracked pitch f0 at its last valid frequency whenever the tuba&rsquo;s RMS level drops below this threshold, completely eliminating pitch-drop glitches at the end of notes.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 00b -->
+    <div class="topology-card">
+        <h3 id="sec-00b"><span class="card-num">00b</span> tuba_transient_valve_detector <span class="param-count">4 parameters</span> <a href="#sec-00b" class="anchor-link">#</a></h3>
+        <p>A specialized Tuba Tongue-Attack (&ldquo;tah&rdquo; / &ldquo;dah&rdquo; / slap-tongue) and Mechanical Valve-Click / Air-Chuff Transient Detector designed to drive dubstep synth envelopes and freeze pitch trackers during messy note transitions.</p>
+        <p>Uses a dual-band Teager-Kaiser Energy Operator (TKEO: ψ(x[n]) = x[n−1]² − x[n]·x[n−2], which responds in 3 samples to instantaneous changes in amplitude and frequency) paired with fast/slow differential spectral flux followers across two bands:</p>
+        <ul>
+            <li><strong>Tongue Wavefront Band</strong> (260 Hz SVF bandpass): Captures brass lip/tongue attacks.</li>
+            <li><strong>Valve-Click &amp; Chuff Band</strong> (2.2 kHz 2-stage SVF highpass): Captures piston/rotary valve clacks and unpitched breath bursts.</li>
+        </ul>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo (or Mono on in1) Tuba Audio Input</li>
+            <li><code>in3</code> — Optional Pitch Confidence [0.0 to 1.0] (from out2 of 00_tuba_freq_tracker; automatically holds the Freeze Gate high if periodicity drops below 0.45 during a valve slur)</li>
+            <li><code>out1</code> — Master Tongue / Attack Trigger Pulse (2.5 ms impulse at 1.0 on every attack)</li>
+            <li><code>out2</code> — Velocity-Sensitive Dubstep Synth Mod Envelope [0.0 to 1.0] (patch to filter cutoff, FM index, comb sweep, or allpass dispersion!)</li>
+            <li><code>out3</code> — Note-Transition Pitch Freeze Gate [0 or 1] (stays at 1.0 for freeze_hold_ms during valve clicks and unpitched attack chaos so downstream pitch effects never glitch)</li>
+            <li><code>out4</code> — Isolated Valve-Click Trigger Pulse (2.5 ms impulse at 1.0 triggered specifically when high-frequency mechanical valve clack dominates)</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out2</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (pitch confidence; holds the Freeze Gate high when periodicity drops below 0.45 during a valve slur). Audio on <code>in1 / in2</code>.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out3</code> (freeze gate) → <code>in4</code> of <a href="#sec-00c">00c tuba_4harmonic_IFT_analyzer</a>.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out2</code> (mod envelope) → filter cutoff, FM index, comb sweep, or allpass dispersion; <code>out1</code> / <code>out4</code> (trigger pulses) → any envelope, gate, or sample-and-hold in the host patch.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">sensitivity</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(default 0.65)</span></td>
+                    <td>Exponential threshold curve (3.2 · 0.11<sup>x^1.2</sup>) with a 28 ms refractory debounce window to prevent double-triggering on low pedal-note waveform peaks.</td>
+                    <td>Controls the onset-flux ratio required to fire a transient trigger. Low values respond only to hard fortissimo slap-tongues; high values catch delicate legato tongue articulations and light valve clicks.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">env_decay_ms</code></td>
+                    <td>15.0 – 1500.0 ms <span class="default-note">(default 220.0 ms)</span></td>
+                    <td>Direct decay duration in milliseconds.</td>
+                    <td>Sets the decay time of the velocity-sensitive dubstep modulation envelope on out2. Short settings (30–90 ms) create percussive tearout transient whips; longer settings (200–800 ms) create full breath-triggered dubstep filter drops.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">freeze_hold_ms</code></td>
+                    <td>5.0 – 150.0 ms <span class="default-note">(default 35.0 ms)</span></td>
+                    <td>Direct hold duration in milliseconds.</td>
+                    <td>Sets how long the Transition Freeze Gate (out3) stays high (1.0) after a tongue or valve transient, bridging over the 15–40 ms chaotic window before the brass bore locks into its new standing-wave regime.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">env_curve</code></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(default −0.35)</span></td>
+                    <td>Exponential power exponent (3<sup>−env_curve</sup>, ranging from cubically concave 1/3 power to cubically convex 3.0 power).</td>
+                    <td>Shapes the curvature of the out2 modulation envelope:
+                        <ul class="param-notes">
+                            <li><strong>−1.0 to −0.3:</strong> Snappy, fast-dropping riddim whip contour</li>
+                            <li><strong>0.0:</strong> Linear decay ramp</li>
+                            <li><strong>+0.3 to +1.0:</strong> Rounded, hanging sustain swell that drops off at the end</li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 00c -->
+    <div class="topology-card">
+        <h3 id="sec-00c"><span class="card-num">00c</span> tuba_4harmonic_IFT_analyzer <span class="param-count">4 parameters</span> <a href="#sec-00c" class="anchor-link">#</a></h3>
+        <p>A 4-Harmonic Instantaneous Frequency &amp; Amplitude (IFT) Analyzer for the live tuba. Simultaneously locks four dual-stage high-Q SVF bandpass filters onto the first four partials of the tuba (f1 = f0, f2 = 2·f0, f3 = 3·f0, f4 = 4·f0), passes each isolated partial through its own 4-stage quadrature IIR Hilbert transform, and differentiates the unwrapped phase dθ<sub>k</sub>/dt on every sample.</p>
+        <p>Captures both the exact per-harmonic amplitude envelope A1..A4 (the tuba&rsquo;s dynamic spectral roll-off / brassiness) and the exact per-harmonic instantaneous frequency f1..f4 (revealing nonlinear bore wave-steepening, ghost-note inharmonicity, and micro-detuning during attacks). Also outputs the real-time Harmonic Spectral Centroid [1.0 to 4.0] on <code>out9</code> so your embouchure brightness (soft vs. brassy cuivré) can directly drive dubstep filter cutoffs or FM indices!</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo (or Mono on in1) Tuba Audio Input</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch f0 in Hz (from out1 of 00_tuba_freq_tracker or <code>fluid.pitch~</code>; automatically falls back to an internal zero-crossing tracker if &lt;= 0)</li>
+            <li><code>in4</code> — Optional Freeze Gate [0 or 1] (from out3 of 00b_tuba_transient_valve_detector; freezes all 4 frequencies and the spectral centroid during valve transitions)</li>
+            <li><code>out1..out4</code> — Instantaneous Frequencies f1, f2, f3, f4 in Hz</li>
+            <li><code>out5..out8</code> — Instantaneous Amplitudes A1, A2, A3, A4</li>
+            <li><code>out9</code> — Real-Time Brass Spectral Centroid Ratio [1.0 to 4.0] (weighted mean harmonic number: 1.0 = pure fundamental, 2.5+ = bright fortissimo brass)</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (or <code>fluid.pitch~</code>, with an internal zero-crossing fallback when ≤ 0). <code>in4</code> ← <code>out3</code> of <a href="#sec-00b">00b tuba_transient_valve_detector</a>.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1..out4</code>, <code>out5..out8</code>, and <code>out9</code> → <code>in1..in4</code>, <code>in5..in8</code>, and <code>in9</code> of <a href="#sec-00d">00d tuba_4op_modfm_resynthesizer</a> — a direct 1-to-1 patch.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out9</code> (spectral centroid) → any cutoff or FM index that should follow brassiness rather than pitch.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">filter_selectivity</code></td>
+                    <td>0.20 – 1.00 <span class="default-note">(default 0.78, maps to dual-stage SVF Q from 0.66 to 0.95)</span></td>
+                    <td>Slightly concave power curve (x<sup>0.8</sup>).</td>
+                    <td>Controls the bandwidth of the 4 harmonic isolation filters before the Hilbert IFT stages. Higher values provide tighter harmonic separation so adjacent partials cannot intermodulate; lower values allow wider frequency excursion during rapid glissandi.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">smooth_ms</code></td>
+                    <td>0.5 – 50.0 ms <span class="default-note">(default 4.5 ms)</span></td>
+                    <td>Direct one-pole smoothing time constant in milliseconds.</td>
+                    <td>Sets the smoothing time constant applied to the 4 differentiated instantaneous frequencies (out1..out4), the 4 Hilbert amplitude envelopes (out5..out8), and the spectral centroid (out9).</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">inharm_range</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(default 0.15, maps to ±2% up to ±27% allowed deviation around k · f0)</span></td>
+                    <td>Linear window width.</td>
+                    <td>Sets the maximum fractional frequency deviation around each nominal harmonic k · f0 that the IFT differentiator will track before relaxing back to the harmonic anchor. Allows you to capture real tuba bore inharmonicity and ghost-note pull without tracking noise when an upper harmonic drops out on soft pedal notes.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">norm_amplitudes</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0.0 = Absolute Hilbert Envelopes A<sub>k</sub>, 1.0 = Sum-Normalized Relative Harmonic Weights A<sub>k</sub> / ΣA)</span></td>
+                    <td>Linear crossfade.</td>
+                    <td>At 0.0, out5..out8 output the true dynamic volume of each partial. At 1.0, out5..out8 always sum to 1.0 regardless of how softly or loudly you play, giving you pure timbre/formant weights for spectral-envelope transfer (Lazzarini &amp; Timoney ModFM vocoder, Approach 6).</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 00d -->
+    <div class="topology-card">
+        <h3 id="sec-00d"><span class="card-num">00d</span> tuba_4op_modfm_resynthesizer <span class="param-count">8 parameters</span> <a href="#sec-00d" class="anchor-link">#</a></h3>
+        <p>A 4-Operator Adaptive ModFM &amp; Phaseshaper Vocoder Resynthesizer designed to be patched directly 1-to-1 from the 9 outlets of <code>00c_tuba_4harmonic_IFT_analyzer.txt</code> (plus an optional 1-bar phasor on <code>in10</code>).</p>
+        <p>Implements the ModFM Synthesis Vocoder concept from Lazzarini &amp; Timoney (ICMC 2011 / DAFx-08) combined with SMC 2010 PolyBLEP Hard-Sync Phaseshaping:</p>
+        <ul>
+            <li>Each of the 4 tracked tuba harmonics (f1..f4, A1..A4) drives its own ModFM operator s<sub>k</sub>(t) = A<sub>k</sub>(t) · carrier<sub>k</sub>(φ<sub>k</sub>) · exp(k_op · (cos(2π·φ_mod) − 1)), generating strictly monotonic Modified Bessel sidebands around each partial that never cancel or clip.</li>
+            <li>The tuba&rsquo;s real-time Spectral Centroid (<code>in9</code>) automatically couples your acoustic brass brightness (soft dark tone vs. brassy fortissimo) to the ModFM index and sync formant ratio.</li>
+            <li>Measures the real-time inharmonic deviation of partials 2, 3, and 4 from integer multiples of f1 and lets you scale it from pure harmonic lock (0.0) up to 4x exaggerated ghost-note metallic clangor.</li>
+        </ul>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1..in4</code> — Harmonics 1..4 Instantaneous Frequencies f1, f2, f3, f4 in Hz (from out1..out4 of 00c)</li>
+            <li><code>in5..in8</code> — Harmonics 1..4 Instantaneous Amplitudes A1, A2, A3, A4 (from out5..out8 of 00c)</li>
+            <li><code>in9</code> — Real-Time Brass Spectral Centroid Ratio [1.0 to 4.0] (from out9 of 00c)</li>
+            <li><code>in10</code> — Optional 1-Bar Audio-Rate Phasor [0.0 to 1.0] (syncs rhythmic ModFM/Sync wobble; falls back to internal 0.5 Hz LFO if unpatched)</li>
+            <li><code>out1 / out2</code> — Stereo 4-Operator ModFM Resynthesizer Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in1..in9</code> ← <code>out1..out9</code> of <a href="#sec-00c">00c tuba_4harmonic_IFT_analyzer</a> (1-to-1). <code>in10</code> ← host/sequencer 1-bar phasor, with an internal 0.5 Hz LFO fallback.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> ends the analysis branch — it is a resynthesized audio output, not a modulation source.</li>
+        </ul>
+
+        <span class="block-label">Parameters (8)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">joy_x_sync_formant</code><br><span class="default-note">(Joystick X-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Center-zero bipolar joystick axis)</span></td>
+                    <td>Exponential sync ratio (1.8 · 2.6<sup>x</sup>, spanning 1.0x pure sinusoidal ModFM at −1.0 to 10.0x screaming PolyBLEP hard-sync formant at +1.0) coupled with a sinusoidal-to-sawtooth carrier morph.</td>
+                    <td>Sweeps the internal hard-sync formant ratio of all 4 harmonic operators simultaneously.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">joy_y_modfm_index</code><br><span class="default-note">(Joystick Y-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Center-zero bipolar joystick axis)</span></td>
+                    <td>Power curve (x<sup>1.35</sup>) scaling the ModFM exponential bandwidth index k_op from 0.3 to 12.0 while progressively boosting operators 2, 3, and 4.</td>
+                    <td>Expands each of the 4 tuba partials from a narrow harmonic into a wide, growling Modified-Bessel formant cluster.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">inharm_stretch</code></td>
+                    <td>0.0 – 4.0 <span class="default-note">(default 1.0)</span></td>
+                    <td>Linear multiplier on each partial&rsquo;s measured deviation (f<sub>k</sub> − k · f<sub>1</sub>):
+                        <ul class="param-notes">
+                            <li><strong>0.0:</strong> Forces all 4 operators into strict integer harmonic lock (1x, 2x, 3x, 4x f1)</li>
+                            <li><strong>1.0:</strong> Preserves the exact natural bore micro-inharmonicity of your tuba</li>
+                            <li><strong>1.0 to 4.0:</strong> Exaggerates ghost-note pull and wave-steepening deviations into metallic dubstep bell/tearout sidebands</li>
+                        </ul>
+                    </td>
+                    <td>Scales the physical inharmonicity measured by the 4-harmonic IFT analyzer.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">cross_op_fm</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(default 0.35)</span></td>
+                    <td>Power curve (x<sup>1.3</sup>) scaling inter-operator phase modulation depth from 0.0 to 0.45 radians.</td>
+                    <td>Routes the output of Operator k−1 to phase-modulate Operator k (with Operator 4 feeding back into Operator 1), turning the 4 additive ModFM operators into a circular 4-op FM synthesis matrix.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">sub_octave_mix</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(default 0.65)</span></td>
+                    <td>Linear level scaling weighted dynamically by Fundamental Amplitude A1 (<code>in5</code>).</td>
+                    <td>Injects a phase-locked 0.5 · f1 sub-octave oscillator (enriched with its 3rd harmonic) that tracks the exact volume envelope of your fundamental partial.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">rhythm_subdiv</code></td>
+                    <td>1 – 16 cycles per bar <span class="default-note">(Quantized in 16 integer steps)</span></td>
+                    <td>Stepped integer multiplier of the 1-bar phasor on <code>in10</code>.</td>
+                    <td>Sets the rhythmic subdivision rate of the synced ModFM &amp; Hard-Sync wobble envelope.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">rhythm_wobble</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% Continuous Breath Control to 100% Tempo-Synced Wobble Whip)</span></td>
+                    <td>Linear depth modulating an asymmetric fast-attack triangle envelope (duty = 0.22, power = 1.5).</td>
+                    <td>Pulsates both the ModFM formant bandwidth and the Hard-Sync ratio in lockstep with the 1-bar phasor.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">stereo_pan_spread</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(default 0.60)</span></td>
+                    <td>Constant-power cosine/sine stereo law plus opposite-polarity L/R cross-FM phase offset.</td>
+                    <td>Keeps Operator 1 (fundamental) and the Sub-Octave anchored dead-center in mono while fanning Operators 2, 3, and 4 progressively wider across the Left and Right channels.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <!-- ===== GROUP FX ===== -->
+    <h2 id="sec-group-fx">Single-Purpose Effects (01–12) <a href="#sec-group-fx" class="anchor-link">#</a></h2>
+
+    <p>Twelve effects in the Unix spirit: each does one thing well, each takes at most 4 parameters, and they are designed to be chained — 01 in particular is the recommended front end for 04, 05, and 16, while 09, 10, and 14 all share a waveguide comb core.</p>
+
+    <!-- 01 -->
+    <div class="topology-card">
+        <h3 id="sec-01"><span class="card-num">01</span> harmonic_isolator <span class="param-count">4 parameters</span> <a href="#sec-01" class="anchor-link">#</a></h3>
+        <p>Isolates the fundamental or a chosen overtone of the live tuba using a pitch-tracked RBJ peaking filter (+0 to +48 dB) cascaded into a dual-stage state-variable bandpass filter. Decouples breath dynamics via fast envelope normalization so the tuba approximates a pure, phase-locked sine wave ready to act as a carrier or modulator in downstream FM, phase distortion, or waveshaping effects.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Audio Input (Left / Right)</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch in Hz (from <code>fluid.pitch~</code>; automatically falls back to internal zero-crossing tracker if &lt;= 0)</li>
+            <li><code>out1 / out2</code> — Stereo Filtered &amp; Boosted Output</li>
+            <li><code>out3 / out4</code> — Pure Normalized Unit-Sine Output (for patching into downstream modulation inlets)</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (or <code>fluid.pitch~</code>, with an internal zero-crossing fallback). Audio on <code>in1 / in2</code>.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → audio <code>in1 / in2</code> of <a href="#sec-04">04 hilbert_phasor_sync</a>, <a href="#sec-05">05 phaseshaper_supersaw_tri</a>, and <a href="#sec-12">12 adaa_chebyshev_wavefolder</a>, each of which names 01 as its preferred source — or of any other effect in the set.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out3 / out4</code> (unit sine) → downstream carrier/modulator inlets of FM, phase-distortion, and waveshaping stages.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">harmonic</code></td>
+                    <td>1.0 – 8.0 <span class="default-note">(Harmonic Ratio / Partial Number)</span></td>
+                    <td>Linear in harmonic ratio (1.0 = fundamental f0, 2.0 = octave, 3.0 = twelfth, etc.; fractional values tune to inharmonic ghost-note zones).</td>
+                    <td>Multiplies the conditioned input fundamental frequency to select which partial of the tuba is isolated.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">boost_db</code></td>
+                    <td>0.0 – 48.0 dB</td>
+                    <td>Logarithmic amplitude (dB-linear, computed as 10<sup>dB/40</sup> for peaking EQ gain with automatic headroom compensation).</td>
+                    <td>Boosts the target harmonic using a resonant bell filter before bandpass isolation, elevating the chosen partial far above the surrounding brass spectrum.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">focus</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(maps to Q from 1.0 to 28.0)</span></td>
+                    <td>Exponential (x<sup>1.4</sup> power curve into base-28 exponential Q) so low-to-mid values offer smooth musical formant tightening while the top 30% locks onto a single harmonic with surgical precision.</td>
+                    <td>Simultaneously increases the Q of the peaking filter and crossfades into the cascaded 2-stage SVF bandpass filter.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">norm_amount</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% to 100% Dynamic Levelling)</span></td>
+                    <td>Slight power curve (x<sup>1.2</sup>) for natural dynamic feel.</td>
+                    <td>Blends between the natural breath envelope of the isolated harmonic (0.0) and a silence-gated, sample-accurate amplitude-normalized unit sine wave (1.0).</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 02 -->
+    <div class="topology-card">
+        <h3 id="sec-02"><span class="card-num">02</span> allpass_disperser <span class="param-count">4 parameters</span> <a href="#sec-02" class="anchor-link">#</a></h3>
+        <p>A pure feed-forward cascade of up to 32 second-order biquad allpass filters per channel inspired by Kilohearts Disperser (&ldquo;Disburser&rdquo;). Because allpass filters have a flat magnitude response (0 dB across all frequencies) but a peaked group-delay curve around their corner frequency, stacking 32 stages multiplies the phase dispersion without carving phaser notches. Brass articulations and distorted harmonic spikes are unfolded in time into squelchy, liquid &ldquo;chirp&rdquo; transients.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Audio Input (Left / Right)</li>
+            <li><code>in3</code> — Optional Tracked Pitch in Hz (if connected &gt; 20 Hz, scales the dispersion corner frequency relative to 110 Hz so the smear tracks the tuba&rsquo;s register)</li>
+            <li><code>out1 / out2</code> — Stereo Phase-Dispersed Audio Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← optional <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (scales the dispersion corner frequency with the register when &gt; 20 Hz). Audio on <code>in1 / in2</code>.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → audio <code>in1 / in2</code> of any downstream effect or instrument.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">stages</code></td>
+                    <td>1.0 – 32.0 stages per channel</td>
+                    <td>Continuous linear with fractional stage interpolation between stage N and N+1 to prevent clicks while sweeping dispersion depth.</td>
+                    <td>Controls the total accumulated group delay (τ_total = N · τ_single). Low counts tighten sub punch; 16–32 stages create dramatic laser-like transient chirps.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">freq_hz</code></td>
+                    <td>30.0 – 4000.0 Hz</td>
+                    <td>Direct value in Hz (smoothly slewed over 5 ms). Low settings (50–180 Hz) smear and fatten the tuba&rsquo;s sub-bass body; mid-high settings (300–2500 Hz) turn distorted brass buzz into liquid dubstep squelches.</td>
+                    <td>Sets the corner frequency of every allpass stage where maximum group delay occurs.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">pinch_q</code></td>
+                    <td>0.707 – 12.0 <span class="default-note">(Q / Resonance)</span></td>
+                    <td>Direct Q factor (0.707 = Butterworth maximally flat delay bump; &gt; 3.0 = tall, narrow resonant group-delay spike).</td>
+                    <td>Controls the sharpness (&ldquo;Smash&rdquo; / &ldquo;Pinch&rdquo;) of the group delay peak around freq_hz. Higher values cause the time-smear to ring with a pitched, vocal-like metallic edge.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">spread</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0 to ±0.75 octaves L/R offset)</span></td>
+                    <td>Exponential octave offset (2<sup>spread · 0.75</sup>).</td>
+                    <td>Offsets the Left and Right allpass cascade corner frequencies in opposite directions around freq_hz, creating massive stereo phase width while preserving mono magnitude compatibility.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 03 -->
+    <div class="topology-card">
+        <h3 id="sec-03"><span class="card-num">03</span> coef_mod_allpass_pd <span class="param-count">4 parameters</span> <a href="#sec-03" class="anchor-link">#</a></h3>
+        <p>Implements the ICASSP 2009 paper by Timoney, Lazzarini, Pekonen, and Välimäki (&ldquo;Spectrally Rich Phase Distortion Sound Synthesis Using an Allpass Filter&rdquo;). Modulates the coefficient a(t) in [0, 1] of a first-order allpass filter at the tuba&rsquo;s fundamental frequency using a piecewise sawtooth phase-deviation function smoothed with a hyperbolic tangent mapping (Eq. 6–9). Unlike wavetable Phase Distortion, this applies true phase distortion directly to the full arbitrary brass signal with a richer high-frequency roll-off and no missing harmonics.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Audio Input (Left / Right)</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch in Hz (from <code>fluid.pitch~</code>; falls back to internal zero-crossing tracker if &lt;= 0)</li>
+            <li><code>out1 / out2</code> — Stereo Allpass Phase-Distorted Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (or <code>fluid.pitch~</code>; internal zero-crossing fallback). Audio on <code>in1 / in2</code>.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → audio <code>in1 / in2</code> of any downstream effect or instrument.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">pd_depth</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% to 100% Phase Deviation Index)</span></td>
+                    <td>Power curve (x<sup>1.3</sup>) for fine control in the subtle-to-medium brass brightening zone and rapid saturation near 1.0 where coefficient modulation approaches 0.95.</td>
+                    <td>Scales the instantaneous phase deviation φ_mod(t) and resulting frequency excursion imparted to each cycle of the tuba.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">knee_p</code></td>
+                    <td>0.05 – 0.95 <span class="default-note">(Inflection Point P of the Cycle)</span></td>
+                    <td>Linear duty fraction (0.25 matches the paper&rsquo;s classic sawtooth PD inflection point; extreme values near 0.05 or 0.95 create sharp, bitey brass edges).</td>
+                    <td>Sets the fraction P of the fundamental period during which the phase modulation rises before falling for the remainder (1 − P) of the cycle.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">smooth_beta</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(maps to β in [1.0, 1.85] in Eq. 9: m′(t) = tanh(α·m(t) − β))</span></td>
+                    <td>Linear mapping to the paper&rsquo;s tanh dip-smoothing constants (0.5 corresponds to the paper&rsquo;s optimal α = 1.40, β = 1.45).</td>
+                    <td>Controls the smoothing of the sharp dips at the phase-inflection boundary. Low values retain a raw, glitchy digital bite; higher values yield a smooth, analog-sawtooth spectral roll-off.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">mix</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% Dry to 100% Wet)</span></td>
+                    <td>Linear crossfade (summing dry and wet creates additional pitch-locked notch animation).</td>
+                    <td>Blends between the dry stereo input and the coefficient-modulated allpass output.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 04 -->
+    <div class="topology-card">
+        <h3 id="sec-04"><span class="card-num">04</span> hilbert_phasor_sync <span class="param-count">4 parameters</span> <a href="#sec-04" class="anchor-link">#</a></h3>
+        <p>Implements the single-oscillator Hard Sync (Eq. 22) and Soft Sync (Eq. 12 &amp; 24) phaseshaping algorithms from Kleimola, Lazzarini, Timoney, and Välimäki (SMC 2010), driven directly by the tuba player&rsquo;s instantaneous phase. A 4-stage quadrature IIR Hilbert allpass network extracts the analytic signal s<sub>a</sub>(t) = A(t)·e<sup>j·θ(t)</sup>, turning the tuba into a player-driven phasor φ(t) in [0, 1). Because no free-running oscillator is used, every lip bend, vibrato, and articulation is 100% phase-locked to the brass fundamental, with 2-sample PolyBLEP antialiasing smoothing the phase-reset discontinuities.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Audio Input (works best when fed by 01_harmonic_isolator)</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch in Hz (from <code>fluid.pitch~</code>; falls back to internal zero-crossing tracker if &lt;= 0, used to compute the PolyBLEP phase increment Ts = f0/fs)</li>
+            <li><code>out1 / out2</code> — Stereo Phaseshaped Sync Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in1 / in2</code> ← <code>out1 / out2</code> of <a href="#sec-01">01 harmonic_isolator</a> (its documented preferred source). <code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a>, or <code>fluid.pitch~</code>.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → audio <code>in1 / in2</code> of any downstream effect or instrument.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">sync_ratio</code></td>
+                    <td>1.0 – 12.0 <span class="default-note">(Slave-to-Master Frequency Ratio a1 = f_slave / f_master)</span></td>
+                    <td>Continuous linear ratio (smoothly slewed over 5 ms). Sweeping this knob sweeps a screaming, phase-locked formant across the harmonic series without needing a filter.</td>
+                    <td>Sets the fractional period multiplier a1 in the phaseshaper <code>mod1(a1 · φ(t))</code>.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">soft_hard</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0.0 = Soft Sync gtri, 1.0 = Hard Sync mod1 ∘ glin)</span></td>
+                    <td>Linear crossfade.</td>
+                    <td>Morphs between time-reversed triangular Soft Sync (where the phase slope inverts at the midpoint of the tuba cycle, producing hollow vocal formants) and aggressive PolyBLEP Hard Sync (sawtooth reset on every tuba period).</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">wave_sin</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0.0 = Geometric Saw/Triangle Terminal, 1.0 = Sinusoidal Waveshaper cos(2π·g(φ)))</span></td>
+                    <td>Linear crossfade.</td>
+                    <td>Selects the outer terminal function f[·] of the nested phaseshaper composition (SMC 2010 Eq. 6 &amp; 8): either raw geometric sync waveforms (0.0) or rounded sinusoidal phase distortion (1.0).</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">mix</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% Dry to 100% Wet)</span></td>
+                    <td>Linear crossfade (because the sync signal is phase-locked to the tuba&rsquo;s analytic phase, blending with dry audio reinforces the fundamental constructively without phasing).</td>
+                    <td>Balances the dry tuba signal with the amplitude-tracked phaseshaped output.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 05 -->
+    <div class="topology-card">
+        <h3 id="sec-05"><span class="card-num">05</span> phaseshaper_supersaw_tri <span class="param-count">4 parameters</span> <a href="#sec-05" class="anchor-link">#</a></h3>
+        <p>Implements the two flagship Roland JP-8000 phaseshaping algorithms plus the Variable-Slope Tilted Triangle phaseshaper from Kleimola, Lazzarini, Timoney, and Välimäki (SMC 2010, Sections 2.4, 3.5, and 3.6):</p>
+        <ol>
+            <li><strong>Triangle Modulation (Eq. 26):</strong> Folds a doubled triangular phase via a ceiling staircase function to generate an odd-harmonic-only spectrum where the 3rd partial dominates and upper formants sweep dramatically.</li>
+            <li><strong>Single-Oscillator Ripple Supersaw (Eq. 28 &amp; Fig. 13):</strong> Uses nested real-valued modulo operations (g<sub>ripple</sub>) inside a single sinusoidal waveshaper to synthesize a thick, 7-saw detuned unison pad phase-locked to the live tuba note.</li>
+        </ol>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Audio Input (ideally fed from 01_harmonic_isolator)</li>
+            <li><code>in3</code> — Optional Tracked Pitch in Hz (reserved for chain compatibility)</li>
+            <li><code>in4</code> — Optional 1-Bar Phasor [0..1] (if patched, locks the Supersaw m1 quadrature detune animation to the bar tempo; otherwise uses an internal 0.35 Hz LFO)</li>
+            <li><code>out1 / out2</code> — Stereo Phaseshaped Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in1 / in2</code> ← <code>out1 / out2</code> of <a href="#sec-01">01 harmonic_isolator</a> (its documented ideal source). <code>in3</code> ← optional <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (reserved for chain compatibility). <code>in4</code> ← host/sequencer 1-bar phasor, otherwise an internal 0.35 Hz LFO.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → audio <code>in1 / in2</code> of any downstream effect or instrument.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">shape_mod</code></td>
+                    <td>0.0 – 1.0</td>
+                    <td>Linear mapping to the paper&rsquo;s exact active parameter ranges: a_TM in [0.70, 1.00] for Triangle Modulation (Eq. 26) and phase extension a1 in [1.15, 2.25] for Supersaw (Eq. 28).</td>
+                    <td>Drives the V-fold depth of the Triangle Modulator and the harmonic brightness/sync discontinuity of the Ripple Supersaw.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">ripple_detune</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(maps to ripple modulus m1 in [0.18, 0.80] with quadrature L/R animation)</span></td>
+                    <td>Linear depth scaling of the ripple modulus m1 (Paper Fig. 12: m1 = 0.25 to 0.75, m2 = 0.88).</td>
+                    <td>Controls the density and stereo unison beating of the ripple-edged phaseshaper.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">tilt_duty</code></td>
+                    <td>0.10 – 0.90 <span class="default-note">(Duty Width w of Parabolic Tilted Triangle Phase svtri, Eq. 16)</span></td>
+                    <td>Linear around 0.50 (at 0.50 the phase ramp is symmetric; moving toward 0.10 or 0.90 tilts the up/down ramp slopes, shifting formants and eliminating every 4th harmonic outside the formant band).</td>
+                    <td>Pre-warps the extracted tuba phasor through the paper&rsquo;s parabolic variable-slope triangle generator before entering the Triangle Mod or Supersaw stage.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">mode_blend</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0.0 = 100% JP-8000 Triangle Modulation, 1.0 = 100% Ripple Supersaw)</span></td>
+                    <td>Linear crossfade.</td>
+                    <td>Seamlessly morphs between hollow, 3rd-harmonic-heavy Triangle Modulation growls and massive stereo Supersaw brass chords.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 06 -->
+    <div class="topology-card">
+        <h3 id="sec-06"><span class="card-num">06</span> asymmetric_delay_adfm <span class="param-count">4 parameters</span> <a href="#sec-06" class="anchor-link">#</a></h3>
+        <p>Implements Asymmetric Delay-Based Adaptive Frequency Modulation (ASDFM1 &amp; ASDFM2) from Lazzarini, Timoney, and Lysaght (DAFx-08, Section 2, Eq. 3 &amp; 4). The full stereo tuba signal acts as a multi-harmonic carrier passed through a cubic-interpolated variable delay line modulated at a ratio of the tracked pitch, then ring-modulated by an exponentially mapped cosine wave normalized by a rational approximation of the Modified Bessel function I0. Displaces sideband energy above or below each brass harmonic to sculpt synthetic formants without sub-bass mud.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Audio Input (Full Tuba Carrier)</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch in Hz (from <code>fluid.pitch~</code>; falls back to internal zero-crossing tracker if &lt;= 0)</li>
+            <li><code>out1 / out2</code> — Stereo Asymmetric Adaptive FM Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (or <code>fluid.pitch~</code>; internal zero-crossing fallback). Audio on <code>in1 / in2</code> — the full tuba signal is the carrier.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → audio <code>in1 / in2</code> of any downstream effect or instrument.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">cm_ratio</code></td>
+                    <td>0.25 – 4.00 <span class="default-note">(Carrier-to-Modulator Frequency Ratio c:m, where f_m = f_0 / cm_ratio)</span></td>
+                    <td>Linear ratio (1.0 = fundamental-locked harmonic sidebands; 2.0 = sub-octave sidebands; 3.0 = twelfth down; non-integer values like 2.45 create metallic multiphonic growls).</td>
+                    <td>Sets the pitch-tracked modulator frequency relative to the tuba&rsquo;s fundamental.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">mod_index</code></td>
+                    <td>0.0 – 6.0 <span class="default-note">(FM Index k)</span></td>
+                    <td>Power curve (x<sup>1.3</sup>) for smooth low-index warmth and aggressive high-index spectral expansion. Delay depth is automatically scaled by 1 / (π · f0) so modulation brightness remains uniform across the tuba&rsquo;s entire register.</td>
+                    <td>Controls the bandwidth and number of sidebands generated around every tuba partial.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">symmetry_r</code></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(maps exponentially to Palamin symmetry factor r = 4<sup>symmetry_r</sup> in [0.25, 4.00])</span></td>
+                    <td>Exponential octave-symmetric taper centered at 0.0 (r = 1.0, classic symmetric FM). Positive values (r &gt; 1.0) shift sideband energy into the upper spectrum (bright formant boost without muddying sub-bass); negative values (r &lt; 1.0) shift energy into lower sub-harmonics.</td>
+                    <td>Dislocates the center of spectral symmetry above or below each carrier harmonic.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">bessel_mode</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0.0 = ASDFM1 Standard Bessel J<sub>n</sub>, 1.0 = ASDFM2 Modified Bessel I<sub>n</sub>)</span></td>
+                    <td>Linear crossfade between Eq. 3 and Eq. 4 coefficient mappings.</td>
+                    <td>Morphs between standard oscillating Bessel sidebands (0.0) and monotonic Modified Bessel sidebands (1.0), which guarantee that sideband n never exceeds sideband n−1, creating clean, undistorted &ldquo;moving formants.&rdquo;</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 07 -->
+    <div class="topology-card">
+        <h3 id="sec-07"><span class="card-num">07</span> adaptive_split_sideband <span class="param-count">4 parameters</span> <a href="#sec-07" class="anchor-link">#</a></h3>
+        <p>Implements Adaptive Split-Sideband Synthesis (ASpSB) from Lazzarini, Timoney, and Lysaght (DAFx-08, Section 3, Eq. 5–20). By passing the carrier tuba, a cosine-mapped modulator cos(I·sin(ω_m·t)), and a sine-mapped modulator sin(I·sin(ω_m·t)) through three independent 4-stage quadrature Hilbert networks, the FM sidebands are split into four orthogonal components: Upper-Even (aeu), Upper-Odd (aou), Lower-Even (ael), and Lower-Odd (aol). Allows independent sculptural control over upper vs. lower and odd vs. even sidebands with stereo spatialization across the sideband groups.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Audio Input (Tuba Carrier)</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch in Hz (from <code>fluid.pitch~</code>; falls back to internal zero-crossing tracker if &lt;= 0)</li>
+            <li><code>out1 / out2</code> — Stereo Split-Sideband Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (or <code>fluid.pitch~</code>; internal zero-crossing fallback). Audio on <code>in1 / in2</code> — the full tuba signal is the carrier.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → audio <code>in1 / in2</code> of any downstream effect or instrument.</li>
+            <li class="route-see"><span class="route-chip">see also</span><a href="#sec-15">15 inst_split_sideband_morph_synth</a> is the playable 2D-joystick version of this same matrix.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">cm_ratio</code></td>
+                    <td>0.10 – 4.00 <span class="default-note">(Carrier-to-Modulator Ratio c:m, where f_m = f_0 / cm_ratio)</span></td>
+                    <td>Linear ratio. Note from DAFx-08 Fig. 14: setting c:m near 10:1 (cm_ratio ~ 4.0, or low modulator frequency) with Upper-Only sidebands adds tight, beating clusters above each brass harmonic for the paper&rsquo;s signature brass &ldquo;growl&rdquo;; setting c:m = 1.5 with Lower-Only sidebands (Fig. 15) morphs the tuba into deep sub-harmonics.</td>
+                    <td>Controls the spacing of the sidebands relative to the tracked fundamental.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">mod_index</code></td>
+                    <td>0.0 – 6.0 <span class="default-note">(Modulation Index I)</span></td>
+                    <td>Power curve (x<sup>1.25</sup>) for responsive harmonic bloom.</td>
+                    <td>Sets the Bessel amplitude scaling J<sub>2n</sub>(I) and J<sub>2n−1</sub>(I) of the even and odd sideband series.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">low_high_tilt</code></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(−1.0 = Lower Sidebands Only, 0.0 = Balanced, +1.0 = Upper Sidebands Only)</span></td>
+                    <td>Linear bipolar tilt. Positive settings eliminate sub-fundamental foldover mud while aggressively brightening the upper brass spectrum; negative settings generate sub-harmonic growls.</td>
+                    <td>Crossfades between the lower sideband pair (ael, aol) and upper sideband pair (aeu, aou).</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">odd_even_tilt</code></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(−1.0 = Odd Sidebands Only, 0.0 = Balanced, +1.0 = Even Sidebands Only)</span></td>
+                    <td>Linear bipolar tilt.</td>
+                    <td>Morphs between hollow, square-like odd sidebands (ω<sub>c</sub> ± (2n−1)·ω<sub>m</sub>) and warm, octave-rich even sidebands (ω<sub>c</sub> ± 2n·ω<sub>m</sub>).</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 08 -->
+    <div class="topology-card">
+        <h3 id="sec-08"><span class="card-num">08</span> suboctave_phase_ringmod <span class="param-count">4 parameters</span> <a href="#sec-08" class="anchor-link">#</a></h3>
+        <p>Combines zero-drift Analytic Phase-Divided Sub-Octave Ring Modulation (Approach 3b &amp; 5 from &ldquo;Novel Distortion Approaches for Live Tuba&rdquo;) with Feedback Amplitude Modulation (Kleimola et al., 2011). Instead of running a separate f0/2 oscillator that slowly drifts and beats against the tuba, this effect unwraps the tuba&rsquo;s analytic phase modulo 6 cycles to compute cos(θ/2) and cos(θ/3) directly from the player&rsquo;s waveform. Every lip bend and vibrato stays 100% phase-locked, while Feedback AM (y[n] = x[n]·(1 + k·y[n−1])) injects sawtooth-like upper harmonic bite.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Audio Input (Left / Right)</li>
+            <li><code>in3</code> — Optional Tracked Pitch in Hz (if connected &gt; 20 Hz, tunes the pre-Hilbert fundamental lowpass to 1.35 · f0 for rock-solid wrap counting)</li>
+            <li><code>out1 / out2</code> — Stereo Sub-Octave Ring-Mod / Feedback AM Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← optional <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (when &gt; 20 Hz it tunes the pre-Hilbert fundamental lowpass to 1.35 · f0). Audio on <code>in1 / in2</code>.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → audio <code>in1 / in2</code> of any downstream effect or instrument.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">sub_harmonic</code></td>
+                    <td>0.0 – 1.0</td>
+                    <td>Three-zone linear morph:
+                        <ul class="param-notes">
+                            <li><strong>0.00:</strong> Pure phase-locked Sub-Octave modulator cos(θ / 2)</li>
+                            <li><strong>0.50:</strong> Phase-locked Sub-Twelfth modulator cos(θ / 3)</li>
+                            <li><strong>1.00:</strong> Dual Sub-Octave + Locked Octave-Up cos(2·θ) modulator (stereo inverted on Right for wide reese width)</li>
+                        </ul>
+                    </td>
+                    <td>Selects the harmonic division ratio of the phase-locked modulator.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">rm_depth</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% Clean → 50% Amplitude Modulation → 100% Full Ring Modulation)</span></td>
+                    <td>Power curve (x<sup>1.2</sup>).</td>
+                    <td>Sweeps the modulation law y = x · ((1 − d) + d · m(t)) continuously from unmodulated carrier (0.0), through 100% AM where carrier + sub-sidebands coexist (0.5), to pure balanced Ring Modulation (1.0).</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">fb_am</code></td>
+                    <td>0.0 – 0.92 <span class="default-note">(Feedback Amplitude Modulation Coefficient k)</span></td>
+                    <td>Power curve (x<sup>1.4</sup>) for subtle warmth in the lower half and aggressive sawtooth brightening near 0.92.</td>
+                    <td>Feeds the previous output sample y[n−1] back into the amplitude modulator (Kleimola et al. 2011), transforming rounded brass partials into a bright, buzzy harmonic slope.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">mix</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% Dry to 100% Wet)</span></td>
+                    <td>Linear crossfade (phase-locked summing prevents phase cancellation).</td>
+                    <td>Balances the dry stereo tuba with the DC-blocked sub-octave ring-modulated signal.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 09 -->
+    <div class="topology-card">
+        <h3 id="sec-09"><span class="card-num">09</span> pitch_tracked_comb_resonator <span class="param-count">4 parameters</span> <a href="#sec-09" class="anchor-link">#</a></h3>
+        <p>A stereo cubic-interpolated waveguide comb filter whose delay lines lock to a harmonic or sub-harmonic ratio of the tuba&rsquo;s fundamental pitch. In modern riddim and tearout dubstep, short resonant comb filters transform raw distorted bass into hollow, metallic, robotic &ldquo;pipe&rdquo; and &ldquo;flange&rdquo; timbres. Because the comb delay tracks the tuba&rsquo;s fundamental, the metallic resonance stays perfectly in tune across the entire horn register rather than clashing dissonance on note changes.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Audio Input (Left / Right)</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch in Hz (from <code>fluid.pitch~</code>; falls back to internal zero-crossing tracker if &lt;= 0)</li>
+            <li><code>out1 / out2</code> — Stereo Comb-Resonated Audio Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (or <code>fluid.pitch~</code>; internal zero-crossing fallback). Audio on <code>in1 / in2</code>.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → audio <code>in1 / in2</code> of any downstream effect or instrument.</li>
+            <li class="route-see"><span class="route-chip">see also</span><a href="#sec-14">14 inst_metallic_comb_growler</a> is the swept, playable version of this same comb core.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">tune_ratio</code></td>
+                    <td>0.5 – 16.0 <span class="default-note">(Comb Resonant Frequency Ratio relative to f0)</span></td>
+                    <td>Continuous linear ratio (0.5 = sub-octave pipe length; 1.0 = fundamental waveguide; 2.0–8.0 = upper harmonic metallic riddim resonances).</td>
+                    <td>Sets the comb delay time T = sr / (f0 · tune_ratio) with 12 ms exponential glide smoothing for liquid waveguide pitch bends.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">feedback</code></td>
+                    <td>−0.98 – +0.98 <span class="default-note">(Bipolar Comb Feedback Gain)</span></td>
+                    <td>Reverse-power S-curve (1 − (1 − |x|)<sup>1.4</sup>) giving high resolution near the self-oscillation extremes.</td>
+                    <td>Positive values (+0.0 to +0.98) reinforce all integer harmonics of the comb frequency (open pipe); negative values (−0.0 to −0.98) invert the loop phase, reinforcing odd harmonics only at half the frequency (stopped pipe / hollow clarinet-metal timbre). Includes internal tanh saturation to prevent runaway clipping.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">damp_bright</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(maps to feedback lowpass cutoff from 400 Hz to 18,000 Hz)</span></td>
+                    <td>Exponential frequency taper (400 · 45<sup>x</sup> Hz).</td>
+                    <td>Controls the one-pole lowpass damping filter inside the comb feedback loop. Low values yield warm, woody acoustic resonator tails; high values unleash icy, razor-sharp metallic riddim ring.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">stereo_detune</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0.0 to ±7.0 semitones L/R comb offset)</span></td>
+                    <td>Power curve (x<sup>1.8</sup>) so the first 50% of the knob provides fine micro-cent stereo chorusing (0 to ±200 cents) while the top half opens into wide power-chord comb intervals.</td>
+                    <td>Detunes the Left and Right comb delay lines symmetrically in opposite directions.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 10 -->
+    <div class="topology-card">
+        <h3 id="sec-10"><span class="card-num">10</span> phasor_synced_comb_flanger <span class="param-count">4 parameters</span> <a href="#sec-10" class="anchor-link">#</a></h3>
+        <p>A tempo-synced stereo comb/flange sweeper driven by the 1-bar audio-rate phasor (0 to 1) on <code>in3</code>. Multiplies and wraps the 1-bar phasor into integer rhythmic subdivisions (quarter notes, 8ths, triplets, 16ths) and shapes each cycle into an asymmetric fast-rise / curved-decay riddim whip envelope. Sweeps a pair of cubic-interpolated resonant comb filters across up to 3.5 octaves to turn steady tuba notes into syncopated, metallic riddim chop-sweeps.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Audio Input (Left / Right)</li>
+            <li><code>in3</code> — 1-Bar Audio-Rate Phasor [0..1] (automatically falls back to an internal 0.5 Hz LFO if unpatched)</li>
+            <li><code>out1 / out2</code> — Stereo Rhythmic Comb-Swept Audio Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← host/sequencer 1-bar phasor (no pitch inlet — this effect is deliberately pitch-free so it can chop any source). Audio on <code>in1 / in2</code>; an internal 0.5 Hz LFO runs when the phasor is unpatched.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → audio <code>in1 / in2</code> of any downstream effect or instrument.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">subdiv_rate</code></td>
+                    <td>1 – 16 cycles per bar <span class="default-note">(Quantized in 16 integer steps)</span></td>
+                    <td>Stepped integer multiplier of the 1-bar phasor (1 = 1 bar, 2 = half notes, 3 = half-note triplets, 4 = quarter notes, 6 = quarter triplets, 8 = eighth notes, 12 = eighth triplets, 16 = sixteenth notes).</td>
+                    <td>Sets the rhythmic rate of the comb sweep within the 1-bar phasor window.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">base_ms</code></td>
+                    <td>0.15 – 15.0 ms <span class="default-note">(equivalent to comb base frequencies from ~66 Hz to 6,666 Hz)</span></td>
+                    <td>Direct delay time in milliseconds (exponentially modulated in octaves by the sweep envelope).</td>
+                    <td>Sets the center delay time of the stereo comb filters. Short values (0.3–2.0 ms) create screaming jet-flange vowels; longer values (3.0–12.0 ms) create hollow metallic tube whips.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">sweep_depth</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(maps to 0.0 to 3.5 octaves of delay modulation)</span></td>
+                    <td>Power curve (x<sup>1.3</sup>) into exponential octave scaling (2<sup>env · 3.5</sup>).</td>
+                    <td>Controls how far the rhythmic envelope sweeps the comb delay time on each beat subdivision.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">resonance</code></td>
+                    <td>−0.96 – +0.96 <span class="default-note">(Bipolar Comb Feedback/Feedforward Gain)</span></td>
+                    <td>Linear bipolar feedback with internal tanh soft-clipping.</td>
+                    <td>Positive values produce bright harmonic flange peaks; negative values produce hollow, odd-harmonic phase-inverted comb sweeps.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 11 -->
+    <div class="topology-card">
+        <h3 id="sec-11"><span class="card-num">11</span> bode_ssb_freq_shifter <span class="param-count">4 parameters</span> <a href="#sec-11" class="anchor-link">#</a></h3>
+        <p>Implements a stereo Bode / Single-Sideband (SSB) Frequency Shifter using dual 4-stage quadrature IIR Hilbert transforms (Approach 3c from &ldquo;Novel Distortion Approaches for Live Tuba&rdquo;). Unlike pitch shifting (which scales frequencies by a ratio), frequency shifting offsets every partial by a fixed number of Hz, turning harmonic brass overtones into either lush, swirling &ldquo;Reese bass&rdquo; barber-pole phasers (at 0.5–8 Hz) or clangorous, through-zero metallic dubstep textures (at 20–500 Hz). Includes pitch-relative scaling so the inharmonic character can stay constant across the tuba&rsquo;s register.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Audio Input (Left / Right)</li>
+            <li><code>in3</code> — Optional Tracked Pitch in Hz (from <code>fluid.pitch~</code>; scales the frequency shift relative to a 55 Hz A1 reference when f0_track_amt &gt; 0)</li>
+            <li><code>out1 / out2</code> — Stereo SSB Frequency-Shifted Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← optional <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a>; it is only read when <code>f0_track_amt</code> &gt; 0 to make the shift a fixed fraction of the played pitch. Audio on <code>in1 / in2</code>.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → audio <code>in1 / in2</code> of any downstream effect or instrument.</li>
+            <li class="route-see"><span class="route-chip">see also</span><a href="#sec-15">15 inst_split_sideband_morph_synth</a> uses a Bode shift pair in the same way.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">shift_hz</code></td>
+                    <td>−500.0 – +500.0 Hz</td>
+                    <td>Cubic center-weighted taper (500 · (0.25·x + 0.75·x³)) providing fine sub-Hertz resolution near 0 Hz for slow barber-pole Reese detuning while reaching ±500 Hz at the extremes.</td>
+                    <td>Sets the base frequency shift in Hz. Setting shift_hz near −f0 (e.g., −55 Hz) folds the fundamental to DC (removed by the internal 12 Hz highpass) and inverts lower sidebands for &ldquo;through-zero&rdquo; metallic gnarl.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">f0_track_amt</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% Fixed Hz Shift to 100% Pitch-Proportional Shift)</span></td>
+                    <td>Linear crossfade between fixed Hz and f0-scaled Hz (normalized to 55 Hz).</td>
+                    <td>When set toward 1.0 with <code>fluid.pitch~</code> connected to in3, the shift amount becomes a fixed fraction of the played pitch (e.g., −0.5 · f0), keeping the exact type of metallic inharmonicity consistent across all notes.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">up_down_stereo</code></td>
+                    <td>−1.0 – +1.0</td>
+                    <td>Three-state continuous stereo morph:
+                        <ul class="param-notes">
+                            <li><strong>−1.0:</strong> Both Left &amp; Right output the Lower sideband (Down-shift)</li>
+                            <li><strong>0.0:</strong> Stereo Split — Left outputs Upper sideband (+Hz), Right outputs Lower sideband (−Hz) for massive stereo Reese width</li>
+                            <li><strong>+1.0:</strong> Both Left &amp; Right output the Upper sideband (Up-shift)</li>
+                        </ul>
+                    </td>
+                    <td>Controls the stereo routing of the upper and lower single-sideband outputs.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">mix</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% Dry to 100% Wet)</span></td>
+                    <td>Linear crossfade (50% mix with small shift_hz produces endless rising/falling barber-pole phaser sweeps).</td>
+                    <td>Blends dry and frequency-shifted signals.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 12 -->
+    <div class="topology-card">
+        <h3 id="sec-12"><span class="card-num">12</span> adaa_chebyshev_wavefolder <span class="param-count">4 parameters</span> <a href="#sec-12" class="anchor-link">#</a></h3>
+        <p>Combines First-Order Antiderivative Antialiased (ADAA1) Wavefolding (Bilbao, Esqueda, Parker, &amp; Välimäki, IEEE SPL 2017) with Chebyshev Polynomial Harmonic Synthesis (Arfib 1979 / Airwindows Pafnuty2) and low-octave preservation (Focus / UnBox). Evaluating the analytical antiderivative F1(x) = −cos(π·x)/π + 0.5·ln(cosh(x)) over each sample interval suppresses foldback aliasing without brute-force oversampling, while the Chebyshev T2–T5 stage injects deterministic 2nd–5th harmonics that never alias on tuba fundamentals.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Audio Input (works great on both raw tuba and 01_harmonic_isolator)</li>
+            <li><code>out1 / out2</code> — Stereo Antialiased Wavefolded / Chebyshev Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in1 / in2</code> ← the raw tuba or <code>out1 / out2</code> of <a href="#sec-01">01 harmonic_isolator</a> (both are named in the source as good sources). This effect has no pitch inlet.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → audio <code>in1 / in2</code> of any downstream effect or instrument.</li>
+            <li class="route-see"><span class="route-chip">see also</span>The same wavefolder appears inside <a href="#sec-13">13</a> and <a href="#sec-18">18</a>.</li>
+        </ul>
+
+        <span class="block-label">Parameters (4)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">drive_db</code></td>
+                    <td>0.0 – 30.0 dB</td>
+                    <td>Logarithmic dB-to-linear amplitude (<code>dbtoa(drive_db)</code>, 1.0x to 31.6x gain).</td>
+                    <td>Drives the tuba waveform through multiple sinusoidal wavefolds or saturates the Chebyshev harmonic polynomials.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">fold_cheby</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0.0 = ADAA1 West-Coast Wavefolder, 1.0 = Chebyshev T2–T5 Harmonic Generator)</span></td>
+                    <td>Linear crossfade.</td>
+                    <td>Morphs between metallic, formant-sweeping West-Coast wavefolding (0.0) and controlled, zero-aliasing Chebyshev polynomial overtone synthesis (1.0).</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">asym_bias</code></td>
+                    <td>−0.60 – +0.60 <span class="default-note">(DC Offset / Single-Ended Triode Asymmetry)</span></td>
+                    <td>Linear bipolar offset (applied in opposite polarity on Left and Right channels for stereo harmonic spread, followed by a 15 Hz DC blocker).</td>
+                    <td>Shifts the operating point of the folder/Chebyshev curve to inject warm even-order harmonics (2nd, 4th) that fatten the tuba&rsquo;s odd-dominant natural spectrum.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">sub_preserve</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% to 100% Clean Sub-95 Hz Fundamental Reinjection)</span></td>
+                    <td>Power curve (x<sup>1.2</sup>).</td>
+                    <td>Splits off the clean sub-95 Hz fundamental via a one-pole lowpass before distortion and sums it back post-clipper so extreme high-drive folding never loses sub-bass weight.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <!-- ===== GROUP INST ===== -->
+    <h2 id="sec-group-inst">Performance Instruments (13–18) <a href="#sec-group-inst" class="anchor-link">#</a></h2>
+
+    <p>Six complete tuba-to-dubstep instruments, each with 8 parameters and two joystick axes intended for a thumb-stick controller mounted on the horn. They combine a tracked fundamental front end, an oscillator/FM or wavefolding core, an allpass disperser, and a tempo-synced movement stage — so each one can carry a whole performance without external patching.</p>
+
+    <!-- 13 -->
+    <div class="topology-card">
+        <h3 id="sec-13"><span class="card-num">13</span> inst_riddim_wobble_titan <span class="param-count">8 parameters</span> <a href="#sec-13" class="anchor-link">#</a></h3>
+        <p>A complete live tuba-to-dubstep/riddim synthesizer instrument designed for thumb-joystick performance. Internally isolates the tuba&rsquo;s fundamental via a pitch-tracked peaking/SVF front end, normalizes it into a phase-locked modulator, drives an Adaptive FM + Sub-Octave oscillator core through an ADAA1 wavefolder and an 8-stage Allpass Phase Disperser, and sculpts the result through a 1-bar-phasor-synced dual state-variable wobble filter.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Tuba Audio Input (Left / Right)</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch in Hz (from <code>fluid.pitch~</code>; falls back to internal zero-crossing tracker if &lt;= 0)</li>
+            <li><code>in4</code> — 1-Bar Audio-Rate Phasor [0..1] (syncs the wobble rhythm; falls back to internal 0.5 Hz LFO if unpatched)</li>
+            <li><code>out1 / out2</code> — Stereo Riddim Wobble Instrument Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (or <code>fluid.pitch~</code>; internal zero-crossing fallback). <code>in4</code> ← host/sequencer 1-bar phasor, otherwise an internal 0.5 Hz LFO.</li>
+            <li class="route-in"><span class="route-chip">in</span><code>in1 / in2</code> ← the raw tuba, or <code>out1 / out2</code> of another effect.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → the end of the chain, or onward into a further effect.</li>
+            <li class="route-see"><span class="route-chip">see also</span>It assembles <a href="#sec-01">01</a>-style isolation, <a href="#sec-06">06</a> adaptive FM, <a href="#sec-08">08</a> sub-octave, <a href="#sec-12">12</a> ADAA1 wavefolding, <a href="#sec-02">02</a> dispersion, and a synced wobble filter. Its own isolation means neither 01 nor <a href="#sec-00c">00c</a> is required.</li>
+        </ul>
+
+        <span class="block-label">Parameters (8)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">joy_x_filtsweep</code><br><span class="default-note">(Joystick X-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Center-zero bipolar joystick axis)</span></td>
+                    <td>Exponential octave mapping (70 · 90<sup>x</sup> Hz, spanning 70 Hz sub-growl to 6,300 Hz open roar).</td>
+                    <td>Manual offset/override on the dual-SVF wobble filter cutoff frequency for expressive thumb-controlled filter sweeps and fills.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">joy_y_fm_scream</code><br><span class="default-note">(Joystick Y-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Center-zero bipolar joystick axis)</span></td>
+                    <td>Power curve (x<sup>1.3</sup>) on FM index (1.2 to 6.7), ADAA wavefolder drive, bandpass formant emphasis, and upper harmonic carrier ratio steps (jumping to 2x and 3x harmonics above +0.25).</td>
+                    <td>Pushing the joystick forward transforms a deep chesty sub-wobble into a screaming tearout/riddim harmonic screech (&ldquo;yoink&rdquo;).</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">wobble_rate</code></td>
+                    <td>1 – 16 cycles per bar <span class="default-note">(Quantized in 16 integer steps)</span></td>
+                    <td>Stepped integer multiplier of the 1-bar phasor (1 = whole bar, 2 = half, 3 = half-triplet, 4 = quarter, 6 = quarter-triplet, 8 = eighth, 12 = eighth-triplet, 16 = sixteenth).</td>
+                    <td>Sets the rhythmic subdivision of the synced wobble LFO.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">wobble_shape</code></td>
+                    <td>0.0 – 1.0</td>
+                    <td>Three-shape continuous morph:
+                        <ul class="param-notes">
+                            <li><strong>0.00:</strong> Smooth raised-cosine dubstep wobble</li>
+                            <li><strong>0.50:</strong> Asymmetric fast-attack / curved-decay riddim whip (duty = 0.20)</li>
+                            <li><strong>1.00:</strong> Gated square-ramp riddim chop (hard silence gap between chops)</li>
+                        </ul>
+                    </td>
+                    <td>Shapes the contour of each wobble cycle.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">sine_boost_db</code></td>
+                    <td>0.0 – 36.0 dB</td>
+                    <td>Logarithmic dB scale (10<sup>dB/40</sup>) with automatic gain compensation.</td>
+                    <td>Sets the peaking EQ boost at f0 before the modulator normalizer. Higher values yield cleaner, more synthetic FM sidebands; lower values let raw brass overtones grit up the FM carrier.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">sub_oct_level</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% to 100% Sub-Octave Foundation)</span></td>
+                    <td>Linear amplitude (includes a 1st + 3rd harmonic sub-waveform for chest-hitting weight on PA systems).</td>
+                    <td>Blends in a pitch-locked f0/2 sub-octave oscillator before the wobble filter.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">disperse_amt</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% Dry to 100% 8-Stage Allpass Dispersion)</span></td>
+                    <td>Linear crossfade.</td>
+                    <td>Routes the pre-filter distorted bass through an 8-stage allpass cascade tuned to 2.5 · f0, smearing each wobble transient into a liquid laser punch.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">filter_res</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(maps to SVF resonance Q from 0.55 to 0.95)</span></td>
+                    <td>Power curve (x<sup>1.2</sup>).</td>
+                    <td>Controls the vocal resonance peak of the dual-stage morphing wobble filter.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 14 -->
+    <div class="topology-card">
+        <h3 id="sec-14"><span class="card-num">14</span> inst_metallic_comb_growler <span class="param-count">8 parameters</span> <a href="#sec-14" class="anchor-link">#</a></h3>
+        <p>A signature modern riddim / tearout &ldquo;metallic talking pipe&rdquo; instrument. Combines three core technologies from the papers:</p>
+        <ol>
+            <li>Delay-Based Asymmetric Adaptive FM (Lazzarini et al. DAFx-08) to inject moving upper-sideband formants onto every harmonic of the tuba.</li>
+            <li>Pitch-tracked cubic-interpolated stereo waveguide comb resonators swept by a kink-warped 1-bar phasor envelope.</li>
+            <li>A 6-stage Allpass Phase Disperser whose corner frequency tracks 0.75x the comb resonant pitch, turning metallic flange peaks into watery, dispersed dubstep laser vowels.</li>
+        </ol>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Tuba Audio Input (Left / Right)</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch in Hz (from <code>fluid.pitch~</code>; falls back to internal zero-crossing tracker if &lt;= 0)</li>
+            <li><code>in4</code> — 1-Bar Audio-Rate Phasor [0..1] (syncs the rhythmic comb whip; internal 0.5 Hz fallback if unpatched)</li>
+            <li><code>out1 / out2</code> — Stereo Metallic Comb Growler Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (or <code>fluid.pitch~</code>; internal zero-crossing fallback). <code>in4</code> ← host/sequencer 1-bar phasor, otherwise an internal 0.5 Hz LFO.</li>
+            <li class="route-in"><span class="route-chip">in</span><code>in1 / in2</code> ← the raw tuba, or <code>out1 / out2</code> of another effect.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → the end of the chain, or onward into a further effect.</li>
+            <li class="route-see"><span class="route-chip">see also</span>It assembles <a href="#sec-06">06</a> asymmetric adaptive FM, the <a href="#sec-09">09</a> waveguide comb, and a 6-stage <a href="#sec-02">02</a> disperser around a phasor-synced whip. It does its own fundamental isolation, so neither <a href="#sec-01">01</a> nor <a href="#sec-00c">00c</a> is required.</li>
+        </ul>
+
+        <span class="block-label">Parameters (8)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">joy_x_comb_morph</code><br><span class="default-note">(Joystick X-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Center-zero bipolar joystick axis)</span></td>
+                    <td>Exponential octave offset (±1.8 octaves around 2 · f0).</td>
+                    <td>Sweeps the pitch-tracked comb delay ratio from deep sub-octave hollow pipes (−1.0) through fundamental-locked metallic throat resonance (0.0) to high-pitched robotic screech pipes (+1.0).</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">joy_y_adfm_growl</code><br><span class="default-note">(Joystick Y-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Center-zero bipolar joystick axis)</span></td>
+                    <td>Power curve (x<sup>1.3</sup>) on FM modulation index (0.4 to 4.6) paired with exponential Palamin symmetry factor r = 3.2<sup>y</sup>.</td>
+                    <td>Controls the pre-comb Asymmetric AdFM stage. Pulling back (−1.0) shifts FM sidebands below the carrier for dark sub-grit; pushing forward (+1.0) blasts upper-sideband moving formants into the comb resonator.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">whip_subdiv</code></td>
+                    <td>1 – 16 cycles per bar <span class="default-note">(Quantized in 16 integer steps)</span></td>
+                    <td>Stepped integer multiplier of the 1-bar phasor.</td>
+                    <td>Sets the rhythmic subdivision rate of the kink-warped comb pitch-whip envelope.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">whip_depth</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(maps to 0.0 to 2.4 octaves of rhythmic comb sweep)</span></td>
+                    <td>Exponential octave depth.</td>
+                    <td>Determines how far each beat subdivision whips the comb resonator pitch upward and back down.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">comb_feedback</code></td>
+                    <td>−0.98 – +0.98 <span class="default-note">(Bipolar Waveguide Feedback)</span></td>
+                    <td>Reverse-power curve (1 − (1 − |x|)<sup>1.4</sup>) for high precision near self-oscillation.</td>
+                    <td>Positive values produce bright, open-pipe metallic ring; negative values produce hollow, odd-harmonic stopped-pipe resonance.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">comb_damping</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(maps to loop lowpass cutoff from 450 Hz to 17,100 Hz)</span></td>
+                    <td>Exponential frequency taper (450 · 38<sup>x</sup> Hz).</td>
+                    <td>Adjusts high-frequency absorption inside the comb feedback loop from warm brassy wood to razor-sharp steel.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">disperse_pinch</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(maps to Allpass Q from 0.707 to 7.2 and wet blend 0% to 100%)</span></td>
+                    <td>Power curve (x<sup>1.4</sup>) on allpass Q.</td>
+                    <td>Simultaneously blends in the 6-stage allpass disperser and pinches its group-delay spike around the comb frequency.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">stereo_width</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0.0 to ±0.35 octaves L/R comb detune)</span></td>
+                    <td>Power curve (x<sup>1.5</sup>) for fine micro-cent stereo widening in the lower half.</td>
+                    <td>Splits the Left and Right comb waveguide frequencies in opposite directions.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 15 -->
+    <div class="topology-card">
+        <h3 id="sec-15"><span class="card-num">15</span> inst_split_sideband_morph_synth <span class="param-count">8 parameters</span> <a href="#sec-15" class="anchor-link">#</a></h3>
+        <p>Turns the Adaptive Split-Sideband (ASpSB) synthesis matrix from Lazzarini, Timoney, and Lysaght (DAFx-08, Section 3, Eq. 20) into a 2D joystick-controlled vector synthesizer for the live tuba. Separates FM distortion into four orthogonal sideband quadrants — Upper-Even, Upper-Odd, Lower-Even, and Lower-Odd — while simultaneously applying opposite-polarity Bode SSB micro-frequency shifting to the Left and Right analytic carrier channels for massive &ldquo;Reese bass&rdquo; stereo swirling.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Tuba Audio Input (Left / Right)</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch in Hz (from <code>fluid.pitch~</code>; falls back to internal zero-crossing tracker if &lt;= 0)</li>
+            <li><code>in4</code> — 1-Bar Audio-Rate Phasor [0..1] (syncs the rhythmic sideband index pulse; internal 0.5 Hz fallback if unpatched)</li>
+            <li><code>out1 / out2</code> — Stereo ASpSB Vector Morph Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (or <code>fluid.pitch~</code>; internal zero-crossing fallback). <code>in4</code> ← host/sequencer 1-bar phasor, otherwise an internal 0.5 Hz LFO.</li>
+            <li class="route-in"><span class="route-chip">in</span><code>in1 / in2</code> ← the raw tuba, or <code>out1 / out2</code> of another effect.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → the end of the chain, or onward into a further effect.</li>
+            <li class="route-see"><span class="route-chip">see also</span>It is the joystick-driven version of <a href="#sec-07">07 adaptive_split_sideband</a>, with a <a href="#sec-11">11</a>-style Bode shift pair across the stereo carriers. It does its own fundamental isolation, so neither <a href="#sec-01">01</a> nor <a href="#sec-00c">00c</a> is required.</li>
+        </ul>
+
+        <span class="block-label">Parameters (8)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">joy_x_odd_even</code><br><span class="default-note">(Joystick X-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Left = 100% Odd Sidebands, Center = Balanced, Right = 100% Even Sidebands)</span></td>
+                    <td>Linear 2D vector weight.</td>
+                    <td>Sweeps horizontally between hollow, clarinet/square-like Odd sidebands (−1.0) and warm, octave-doubled Even sidebands (+1.0).</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">joy_y_low_high</code><br><span class="default-note">(Joystick Y-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Down = 100% Lower Sub-Sidebands, Up = 100% Upper Screech Sidebands + Index Boost)</span></td>
+                    <td>Linear 2D vector weight coupled with a 1.0x ± 0.65x multiplier on the FM modulation index.</td>
+                    <td>Sweeps vertically from deep sub-harmonic multiphonics (DAFx-08 Fig. 15) to screaming upper-sideband brass growls (DAFx-08 Fig. 14).</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">cm_ratio</code></td>
+                    <td>0.10 – 4.00 <span class="default-note">(Carrier-to-Modulator Frequency Ratio c:m, where f_m = f_0 / cm_ratio)</span></td>
+                    <td>Linear ratio (1.5 = sub-harmonics at 2/3 f0; 1.0 = harmonic series; 0.1–0.25 = wide inharmonic sideband spacing; 3.0–4.0 = tight beating growl clusters).</td>
+                    <td>Sets the pitch-tracked modulator frequency relative to the tuba&rsquo;s fundamental.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">base_index</code></td>
+                    <td>0.0 – 6.0 <span class="default-note">(Base FM Modulation Index I)</span></td>
+                    <td>Continuous linear index (internally scaled by Joystick Y and the rhythmic Hann pulse).</td>
+                    <td>Controls the baseline Bessel harmonic expansion of the four sideband quadrants.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">pulse_rate</code></td>
+                    <td>1 – 16 cycles per bar <span class="default-note">(Quantized in 16 integer steps)</span></td>
+                    <td>Stepped integer multiplier of the 1-bar phasor.</td>
+                    <td>Sets the rhythmic subdivision of the synced Hann-window sideband index pulse.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">pulse_depth</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% Steady Index to 100% Pulsed Sideband Wobble)</span></td>
+                    <td>Linear modulation depth.</td>
+                    <td>Modulates the ASpSB modulation index I rhythmically in lockstep with the 1-bar phasor.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">stereo_bode_hz</code></td>
+                    <td>0.0 – 25.0 Hz</td>
+                    <td>Power curve (x<sup>1.6</sup>) giving fine 0.1–3.0 Hz resolution in the first half of the knob for lush, slow barber-pole Reese detuning, and faster metallic vibrato toward 25 Hz.</td>
+                    <td>Rotates the Left analytic carrier upward by +Hz and the Right analytic carrier downward by −Hz before the ASpSB matrix multiply.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">carrier_focus</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% Full Raw Tuba Carrier to 100% Isolated Fundamental Sine Carrier)</span></td>
+                    <td>Linear crossfade with simultaneous SVF Q tightening.</td>
+                    <td>Controls whether ASpSB sidebands are generated around every brass partial (0.0, dense multicarrier growl) or purely around the isolated fundamental sine wave (1.0, laser-clean synthetic FM).</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 16 -->
+    <div class="topology-card">
+        <h3 id="sec-16"><span class="card-num">16</span> inst_phaseshaper_matrix_lead <span class="param-count">8 parameters</span> <a href="#sec-16" class="anchor-link">#</a></h3>
+        <p>A full phaseshaping synthesizer instrument driven by the tuba&rsquo;s analytic phase φ(t), uniting all four oscillator algorithms from Kleimola, Lazzarini, Timoney, and Välimäki (SMC 2010):</p>
+        <ul>
+            <li><strong>Voice 1 (Joystick Y Down):</strong> Variable-Slope Parabolic Triangle Phase gvtri → Sinusoid (Eq. 16–17), producing vocal formant peaks where every 4th harmonic outside the formant is suppressed.</li>
+            <li><strong>Voice 2 (Joystick Y Center):</strong> PolyBLEP Single-Oscillator Hard Sync (Eq. 22) layered with Roland JP-8000 Triangle Modulation (Eq. 26).</li>
+            <li><strong>Voice 3 (Joystick Y Up):</strong> Roland JP-8000 Ripple Supersaw (Eq. 28) with quadrature stereo m1 modulation.</li>
+        </ul>
+        <p>Includes a phase-unwrapped sub-octave foundation cos(θ/2) so every voice stays anchored to massive dubstep sub-bass.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Tuba Audio Input (Left / Right)</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch in Hz (from <code>fluid.pitch~</code>; falls back to internal zero-crossing tracker if &lt;= 0)</li>
+            <li><code>in4</code> — 1-Bar Audio-Rate Phasor [0..1] (drives rhythmic sync-ratio sweeps and supersaw LFO; internal 0.5 Hz fallback if unpatched)</li>
+            <li><code>out1 / out2</code> — Stereo Phaseshaper Matrix Instrument Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (or <code>fluid.pitch~</code>; internal zero-crossing fallback). <code>in4</code> ← host/sequencer 1-bar phasor, otherwise an internal 0.5 Hz LFO.</li>
+            <li class="route-in"><span class="route-chip">in</span><code>in1 / in2</code> ← the raw tuba, or <code>out1 / out2</code> of another effect.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → the end of the chain, or onward into a further effect.</li>
+            <li class="route-see"><span class="route-chip">see also</span>It unites the <a href="#sec-04">04</a> hard-sync and <a href="#sec-05">05</a> triangle-mod / supersaw phaseshapers over the <a href="#sec-08">08</a> phase-divided sub-octave. It isolates the fundamental itself via <code>pre_sine_iso</code>, so <a href="#sec-01">01</a> is not required.</li>
+        </ul>
+
+        <span class="block-label">Parameters (8)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">joy_x_sync_sweep</code><br><span class="default-note">(Joystick X-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Center-zero bipolar joystick axis)</span></td>
+                    <td>Exponential ratio taper (2.5 · 3.2<sup>x</sup>, spanning 0.78x Minimoog waveslice at −1.0 to 8.0x screaming hard-sync formant at +1.0).</td>
+                    <td>Sweeps the master fractional-period multiplier a1 across all three phaseshaper engines simultaneously.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">joy_y_morph_algo</code><br><span class="default-note">(Joystick Y-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Center-zero bipolar joystick axis)</span></td>
+                    <td>Three-point continuous crossfade (−1.0 = Tilted-Triangle Sinusoidal Formant, 0.0 = PolyBLEP Hard Sync + JP-8000 Triangle Mod, +1.0 = Ripple Supersaw Unison).</td>
+                    <td>Morphs the phaseshaping topology in real time while playing.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">tilt_duty_w</code></td>
+                    <td>0.10 – 0.90 <span class="default-note">(Duty Width w of Parabolic Triangle Phase svtri, Eq. 16)</span></td>
+                    <td>Linear duty cycle centered at 0.50.</td>
+                    <td>Tilts the up-ramp vs. down-ramp slope of the extracted phase cycle, shifting the spectral tilt and hollow formant notches.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">supersaw_ripple</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(maps to ripple modulus m1 in [0.20, 0.75] with m2 = 0.88)</span></td>
+                    <td>Linear ripple depth.</td>
+                    <td>Sets the detuned sawtooth density and stereo chorus spread of the Voice 3 Ripple Supersaw generator.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">rhythm_subdiv</code></td>
+                    <td>1 – 16 cycles per bar <span class="default-note">(Quantized in 16 integer steps)</span></td>
+                    <td>Stepped integer multiplier of the 1-bar phasor.</td>
+                    <td>Sets the rhythmic subdivision rate of the synced phase-ratio envelope.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">rhythm_depth</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(adds 0.0 to +5.0 to the sync ratio a1 on each beat)</span></td>
+                    <td>Asymmetric fast-attack triangle envelope (duty = 0.20, power 1.5).</td>
+                    <td>Whips the phaseshaper sync ratio a1 rhythmically in sync with the 1-bar phasor.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">sub_lock_mix</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% to 100% Phase-Divided Sub-Octave cos(θ / 2))</span></td>
+                    <td>Linear blend with automatic headroom compensation on the upper lead voices.</td>
+                    <td>Mixes in the zero-drift unwrapped sub-octave sine wave underneath the phaseshaped lead.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">pre_sine_iso</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% Raw Tuba into Hilbert to 100% SVF-Isolated Fundamental into Hilbert)</span></td>
+                    <td>Linear crossfade with Q scaling.</td>
+                    <td>Controls the purity of the analytic phasor φ(t). At 1.0, φ(t) is a glass-smooth ramp; lower values let residual brass overtones inject organic phase grain.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 17 -->
+    <div class="topology-card">
+        <h3 id="sec-17"><span class="card-num">17</span> inst_cyber_tuba_tearout_engine <span class="param-count">8 parameters</span> <a href="#sec-17" class="anchor-link">#</a></h3>
+        <p>An aggressive tearout / machine-gun dubstep instrument combining Rotating Analytic Ring Modulation (Approach 3f: y = Re{s<sub>a</sub> · e<sup>j·ψ</sup>}), Feedback FM Delay Modulation (Approach 1c: d(t) = d0 + k·y(t−1)), a 16-stage Allpass Phase Disperser, and a 1-bar-phasor-synced trapezoid machine-gun chopper with per-hit pitch/dispersion drop envelopes.</p>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Tuba Audio Input (Left / Right)</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch in Hz (from <code>fluid.pitch~</code>; falls back to internal zero-crossing tracker if &lt;= 0)</li>
+            <li><code>in4</code> — 1-Bar Audio-Rate Phasor [0..1] (drives the machine-gun chop and pitch-drop envelopes; internal 0.5 Hz fallback if unpatched)</li>
+            <li><code>out1 / out2</code> — Stereo Tearout Engine Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (or <code>fluid.pitch~</code>; internal zero-crossing fallback). <code>in4</code> ← host/sequencer 1-bar phasor, otherwise an internal 0.5 Hz LFO.</li>
+            <li class="route-in"><span class="route-chip">in</span><code>in1 / in2</code> ← the raw tuba, or <code>out1 / out2</code> of another effect.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → the end of the chain, or onward into a further effect.</li>
+            <li class="route-see"><span class="route-chip">see also</span>It builds on <a href="#sec-08">08</a>-family analytic ring modulation, adds a 16-stage <a href="#sec-02">02</a> disperser, and gates with a <a href="#sec-10">10</a>-style synced chopper. It does its own fundamental isolation, so neither <a href="#sec-01">01</a> nor <a href="#sec-00c">00c</a> is required.</li>
+        </ul>
+
+        <span class="block-label">Parameters (8)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">joy_x_disperse_freq</code><br><span class="default-note">(Joystick X-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Center-zero bipolar joystick axis)</span></td>
+                    <td>Exponential frequency sweep (220 · 12<sup>x</sup> Hz, spanning 18 Hz sub-thump dispersion to 2,640 Hz laser transient smear).</td>
+                    <td>Sweeps the corner frequency of the 16-stage allpass disperser cascade.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">joy_y_fb_tearout</code><br><span class="default-note">(Joystick Y-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Center-zero bipolar joystick axis)</span></td>
+                    <td>Power curve (x<sup>1.3</sup>) on Feedback FM index k in [0.0, 0.85] plus stereo phase rotation spread.</td>
+                    <td>Controls the self-modulating Feedback FM loop (d(t) = d0 + k·y(t−1)). Low values give a tight sawtooth brass edge; pushing forward unleashes &ldquo;torn&rdquo; metallic tearout growls.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">rot_harmonic</code></td>
+                    <td>−1.0 – +2.0 <span class="default-note">(Analytic Phase Rotation Multiplier in Re{s<sub>a</sub> · e<sup>j · rot · θ</sup>})</span></td>
+                    <td>Continuous linear harmonic slider (−0.5 = locked sub-octave; 0.0 = fundamental; +1.0 = locked 2nd harmonic; fractional values sweep smoothly through the harmonic series without classic RM dual-sideband clash).</td>
+                    <td>Slides the entire harmonic series of the tuba up or down in the analytic phase domain.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">gun_subdiv</code></td>
+                    <td>1 – 16 hits per bar <span class="default-note">(Quantized in 16 integer steps)</span></td>
+                    <td>Stepped integer multiplier of the 1-bar phasor (8 = eighth-note chops, 12 = triplet machine-gun, 16 = 16th-note tearout).</td>
+                    <td>Sets the repetition rate of the synced machine-gun gate and transient punch envelope.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">gun_chop_depth</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% Sustained to 100% Hard Trapezoid Chop)</span></td>
+                    <td>Linear depth blending between continuous sustain (0.0) and crisp trapezoid-gated machine-gun repeats (1.0).</td>
+                    <td>Controls the rhythmic gating depth of each subdivision hit.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">pitch_drop_env</code></td>
+                    <td>0.0 – 1.0</td>
+                    <td>Decaying power envelope ((1 − phase)<sup>2.2</sup>) applied to both the analytic phase rotation and the FM waveguide delay time.</td>
+                    <td>Adds a percussive pitch-and-phase downward &ldquo;laser drop&rdquo; at the attack of every machine-gun hit.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">disperse_q</code></td>
+                    <td>1.0 – 10.0 <span class="default-note">(Allpass Cascade Q / Pinch)</span></td>
+                    <td>Linear Q factor across all 16 allpass biquad stages per channel.</td>
+                    <td>Controls the resonance of the group-delay spike in the 16-stage disperser before the final clipper.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">post_slam_db</code></td>
+                    <td>0.0 – 24.0 dB</td>
+                    <td>Logarithmic dB-to-linear gain (<code>dbtoa</code>) into a final tanh output clipper (Mackity / ZOutputStage style slam).</td>
+                    <td>Slams the dispersed tearout transients into a hard ceiling so the dispersive pre-ringing and tail pump with maximum dubstep loudness.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 18 -->
+    <div class="topology-card">
+        <h3 id="sec-18"><span class="card-num">18</span> inst_harmonic_cannon_polybass <span class="param-count">8 parameters</span> <a href="#sec-18" class="anchor-link">#</a></h3>
+        <p>Implements the Pitch-Tracked Multiband Adaptive Processor (Approach 6 from &ldquo;Novel Distortion Approaches for Live Tuba&rdquo;) combined with Airwindows Focus/BassDrive philosophy. Because the tuba&rsquo;s fundamental f0 is known, the crossover frequencies slide dynamically with the played pitch at 1.5 · f0 and 3.5 · f0 so each band always contains a fixed set of harmonics across the entire compass of the horn:</p>
+        <ul>
+            <li><strong>Band 1</strong> (&lt; 1.5 · f0, Fundamental): Kept pristine and reinforced with a zero-crossing-locked sub-octave wave.</li>
+            <li><strong>Band 2</strong> (1.5 · f0 to 3.5 · f0, 2nd &amp; 3rd Harmonics): Processed through ICASSP 2009 Coefficient-Modulated Allpass Phase Distortion and Chebyshev T2/T3/T5 polynomial waveshaping.</li>
+            <li><strong>Band 3</strong> (&gt; 3.5 · f0, Upper Brass Overtones): Routed into a stereo pitch-tracked metallic comb resonator, then sculpted by dual vowel formant filters (F1 &amp; F2).</li>
+        </ul>
+
+        <span class="block-label">Inlets &amp; Outlets</span>
+        <ul class="io-list">
+            <li><code>in1 / in2</code> — Stereo Tuba Audio Input (Left / Right)</li>
+            <li><code>in3</code> — Tracked Fundamental Pitch in Hz (from <code>fluid.pitch~</code>; falls back to internal zero-crossing tracker if &lt;= 0)</li>
+            <li><code>in4</code> — 1-Bar Audio-Rate Phasor [0..1] (syncs multiband comb and vowel formant motion; internal 0.5 Hz fallback if unpatched)</li>
+            <li><code>out1 / out2</code> — Stereo Multiband Harmonic Cannon Output</li>
+        </ul>
+
+        <span class="block-label">Signal Routing</span>
+        <ul class="route-list">
+            <li class="route-in"><span class="route-chip">in</span><code>in3</code> ← <code>out1</code> of <a href="#sec-00">00 tuba_freq_tracker</a> (or <code>fluid.pitch~</code>; internal zero-crossing fallback). <code>in4</code> ← host/sequencer 1-bar phasor, otherwise an internal 0.5 Hz LFO.</li>
+            <li class="route-in"><span class="route-chip">in</span><code>in1 / in2</code> ← the raw tuba, or <code>out1 / out2</code> of another effect.</li>
+            <li class="route-out"><span class="route-chip">out</span><code>out1 / out2</code> → the end of the chain, or onward into a further effect.</li>
+            <li class="route-see"><span class="route-chip">see also</span>Bands two and three reuse <a href="#sec-03">03</a> allpass phase distortion, <a href="#sec-12">12</a> Chebyshev shaping, and the <a href="#sec-09">09</a> comb, split by pitch at 1.5 · f0 and 3.5 · f0. Its own band-splitting means neither <a href="#sec-01">01</a> nor <a href="#sec-00c">00c</a> is required.</li>
+        </ul>
+
+        <span class="block-label">Parameters (8)</span>
+        <table>
+            <thead><tr><th>Parameter</th><th>Range</th><th>Taper</th><th>Function</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><code class="param-name">joy_x_vowel_tilt</code><br><span class="default-note">(Joystick X-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Center-zero bipolar joystick axis)</span></td>
+                    <td>Exponential formant frequency mapping (F1 sweeps 240–910 Hz; F2 counter-sweeps 750–2,625 Hz; Band 3 comb shifts ±0.8 octaves).</td>
+                    <td>Morphs the mid/high harmonic bands across vocal dubstep formants (&ldquo;oo&rdquo; → &ldquo;ah&rdquo; → &ldquo;ee&rdquo;/&ldquo;yoink&rdquo;) while leaving Band 1&rsquo;s sub-fundamental untouched.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">joy_y_multidrive</code><br><span class="default-note">(Joystick Y-Axis)</span></td>
+                    <td>−1.0 – +1.0 <span class="default-note">(Center-zero bipolar joystick axis)</span></td>
+                    <td>Linear-to-exponential drive scaling across Band 2 Chebyshev saturation, Allpass PD depth, Band 3 comb excitation, and F2 formant brightness.</td>
+                    <td>Acts as a master &ldquo;aggression / bloom&rdquo; axis for the upper two harmonic bands while Band 1 maintains rock-solid low-end weight.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">sub_foundation</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% to 100% Locked Sub-Octave Injection in Band 1)</span></td>
+                    <td>Power curve (x<sup>1.2</sup>).</td>
+                    <td>Controls the level of the f0-locked sub-octave generator summed with the isolated fundamental in Band 1.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">mid_allpass_pd</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(0% to 100% Coefficient-Modulated Allpass Phase Distortion on Band 2)</span></td>
+                    <td>Linear modulation of the ICASSP 2009 tanh-smoothed sawtooth allpass coefficient m(t) in [0.15, 0.93].</td>
+                    <td>Imparts sawtooth phase distortion specifically to the 2nd and 3rd harmonics of the tuba.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">high_comb_metal</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(maps to Band 3 comb feedback from 0.0 to 0.88)</span></td>
+                    <td>Linear feedback scaling with internal tanh loop saturation.</td>
+                    <td>Controls the metallic pipe resonance applied exclusively to harmonics above 3.5 · f0.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">motion_subdiv</code></td>
+                    <td>1 – 16 cycles per bar <span class="default-note">(Quantized in 16 integer steps)</span></td>
+                    <td>Stepped integer multiplier of the 1-bar phasor.</td>
+                    <td>Sets the rhythmic subdivision rate of the synced formant and comb modulation LFO.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">motion_depth</code></td>
+                    <td>0.0 – 1.0</td>
+                    <td>Asymmetric triangle LFO (duty = 0.30) modulating both the Band 3 comb pitch (up to +1 octave) and the F1/F2 vowel formant cutoffs.</td>
+                    <td>Controls the depth of the 1-bar synced rhythmic animation.</td>
+                </tr>
+                <tr>
+                    <td><code class="param-name">stereo_spread</code></td>
+                    <td>0.0 – 1.0 <span class="default-note">(maps to ±25% L/R comb delay offset and ±10% vowel formant offset)</span></td>
+                    <td>Linear stereo divergence (Band 1 fundamental and sub-octave remain 100% mono-centered for club/PA sub compatibility).</td>
+                    <td>Widens the stereo image of the upper two harmonic bands while keeping the sub-bass mono.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <span class="status-badge">Status: parameter reference only, generated from the 22 <code>*_paraminfo.txt</code> files in <code>rnbo codebox effects generated/</code>. No DSP code described here.</span>
+
+    <hr class="footer-rule">
+
+</div> <!-- end container -->
+</div> <!-- end page-wrapper -->
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const navLinks = document.querySelectorAll('.toc-nav-list a');
+    const headers = document.querySelectorAll('h2[id], h3[id], h4[id]');
+
+    let activeId = null;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                activeId = entry.target.id;
+            } else if (activeId === entry.target.id) {
+                activeId = null;
+            }
+        });
+        if (activeId) {
+            navLinks.forEach(link => link.classList.remove('active'));
+            const activeLink = document.querySelector(`.toc-nav-list a[href="#${activeId}"]`);
+            if (activeLink) activeLink.classList.add('active');
+        }
+    }, { rootMargin: '0px 0px -75% 0px', threshold: 0 });
+
+    headers.forEach(h => observer.observe(h));
+
+    const toggleBtn = document.getElementById('tocToggle');
+    const sidebar = document.getElementById('tocSidebar');
+    const backdrop = document.getElementById('tocBackdrop');
+
+    function toggleToc() {
+        sidebar.classList.toggle('mobile-open');
+        backdrop.classList.toggle('show');
+    }
+
+    toggleBtn.addEventListener('click', toggleToc);
+    backdrop.addEventListener('click', toggleToc);
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 1000) {
+                sidebar.classList.remove('mobile-open');
+                backdrop.classList.remove('show');
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>

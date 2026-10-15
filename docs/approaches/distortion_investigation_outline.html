@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distortion &amp; Overdrive for Live Tuba Dubstep — Research Investigation Outline</title>
+    <style>
+        /* ===== Reset & Base ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #161618;
+            --card-bg: #1e1e22;
+            --text: #e4e4e7;
+            --text-muted: #a1a1aa;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --border: #52525b;
+            --code-bg: #2a2a30;
+            --warn-bg: #3d3520;
+            --warn-border: #a38d2a;
+            --section-accent: #3b82f6;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
+            --radius: 6px;
+        }
+
+        body {
+            font-family: "Charter", "Georgia", "Times New Roman", serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== Layout ===== */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 6rem;
+        }
+
+        /* ===== Typography ===== */
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 0.75rem;
+            color: #f0f0f5;
+            letter-spacing: -0.02em;
+        }
+
+        h2, h3, h4 {
+            scroll-margin-top: 1.5rem;
+        }
+        h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-top: 3rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.35rem;
+            border-bottom: 2px solid var(--border);
+            color: #e4e4e7;
+            letter-spacing: -0.01em;
+            position: relative;
+        }
+        h2 .anchor-link, h3 .anchor-link, h4 .anchor-link {
+            opacity: 0;
+            font-size: 0.75em;
+            margin-left: 0.4rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-bottom: none;
+            transition: opacity 0.15s;
+            vertical-align: middle;
+        }
+        h2:hover .anchor-link,
+        h3:hover .anchor-link,
+        h4:hover .anchor-link {
+            opacity: 1;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+            color: #d4d4d8;
+        }
+
+        h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.4rem;
+            color: #c4c4cc;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            font-weight: 700;
+        }
+
+        em {
+            font-style: italic;
+        }
+
+        /* ===== Links ===== */
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.15s;
+        }
+        a:hover {
+            border-bottom-color: var(--accent);
+        }
+        a:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        /* ===== Hero / header area ===== */
+        .header-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 2.5rem 0 2rem;
+            font-size: 0.92rem;
+            color: var(--text-muted);
+        }
+        .header-meta .meta-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            line-height: 1.5;
+        }
+        .header-meta .meta-icon {
+            flex-shrink: 0;
+            width: 1.8rem;
+            height: 1.8rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            margin-top: 0.05rem;
+        }
+        .meta-icon.project  { background: #1e3a5f; color: #3b82f6; }
+        .meta-icon.goal    { background: #3d2a15; color: #f59e0b; }
+        .meta-icon.chain   { background: #1a3d2e; color: #34d399; }
+        .header-meta .meta-label {
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #a1a1aa;
+            margin-bottom: 0.15rem;
+        }
+        .header-meta .meta-body {}
+        .header-meta .meta-body p {
+            margin-bottom: 0;
+        }
+
+        /* ===== Horizontal rule ===== */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+
+        /* ===== Lists ===== */
+        ul, ol {
+            margin: 0.75rem 0 1rem 1.5rem;
+        }
+        ul li, ol li {
+            margin-bottom: 0.5rem;
+            padding-left: 0.25rem;
+        }
+        ul ul, ol ul, ul ol, ol ol {
+            margin-top: 0.4rem;
+            margin-bottom: 0.4rem;
+        }
+        ul li::marker {
+            color: #666;
+        }
+
+        /* ===== Inline code ===== */
+        code {
+            font-family: "SF Mono", "Fira Code", "Consolas", "Monaco", monospace;
+            font-size: 0.88em;
+            background: var(--code-bg);
+            padding: 0.15em 0.4em;
+            border-radius: 3px;
+            color: #d4d4d8;
+        }
+
+        /* ===== Math / LaTeX display ===== */
+        .math-inline {
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+            background: #2d2d33;
+            padding: 0.05em 0.2em;
+            border-radius: 2px;
+        }
+
+        /* ===== Blockquote (warning notes) ===== */
+        blockquote {
+            margin: 1rem 0;
+            padding: 0.75rem 1rem;
+            background: var(--warn-bg);
+            border-left: 4px solid var(--warn-border);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-size: 0.93rem;
+            color: #e5c94d;
+        }
+        blockquote p {
+            margin-bottom: 0.5rem;
+        }
+        blockquote p:last-child {
+            margin-bottom: 0;
+        }
+        blockquote strong {
+            color: #f5d76e;
+        }
+
+        /* ===== Tables ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 1.25rem;
+            font-size: 0.9rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        thead {
+            background: #2d2d33;
+        }
+        th {
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #a1a1aa;
+            text-align: left;
+            padding: 0.6rem 0.85rem;
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 0.55rem 0.85rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+            line-height: 1.55;
+        }
+        tbody tr:hover {
+            background: #2d2d33;
+        }
+        td:first-child, th:first-child {
+            white-space: nowrap;
+        }
+
+        /* ===== Card sections for each major candidate topology ===== */
+        .topology-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem 1.5rem;
+            margin: 1.25rem 0;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.15s;
+        }
+        .topology-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .topology-card h4 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            color: #e4e4e7;
+        }
+        .topology-card h4 .card-num {
+            color: var(--accent);
+            margin-right: 0.3rem;
+        }
+        .topology-card .field-label {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            margin-right: 0.3rem;
+            min-width: 5rem;
+        }
+        .topology-card p {
+            margin-bottom: 0.5rem;
+        }
+        .topology-card ul {
+            margin-top: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ===== Questions / call-out boxes ===== */
+        .questions-box {
+            background: #1e2a3d;
+            border: 1px solid #2d3d5f;
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+        }
+        .questions-box h4 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: #c4d4e4;
+        }
+        .questions-box ol {
+            margin-bottom: 0;
+        }
+        .questions-box ol li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ===== Tier list styles ===== */
+        .tier-label {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.15em 0.6em;
+            border-radius: 3px;
+            margin-right: 0.5rem;
+        }
+        .tier-1 { background: #1a3d2e; color: #4ade80; }
+        .tier-2 { background: #1a2d4d; color: #3b82f6; }
+        .tier-3 { background: #3d2a15; color: #f59e0b; }
+        .tier-4 { background: #3d1a3d; color: #c084fc; }
+
+        /* ===== Experiment sequence steps ===== */
+        .step-list {
+            counter-reset: step;
+            list-style: none;
+            margin-left: 0;
+        }
+        .step-list li {
+            counter-increment: step;
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .step-list li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: -0.1rem;
+            width: 1.6rem;
+            height: 1.6rem;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        /* ===== Status badge ===== */
+        .status-badge {
+            display: inline-block;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            background: var(--code-bg);
+            padding: 0.2em 0.7em;
+            border-radius: 3px;
+            margin-top: 2rem;
+        }
+
+        /* ===== Footer ===== */
+        .footer-rule {
+            margin-top: 3rem;
+            opacity: 0.5;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 640px) {
+            .container {
+                padding: 1.5rem 1rem 4rem;
+            }
+            h1 {
+                font-size: 1.7rem;
+            }
+            h2 {
+                font-size: 1.25rem;
+            }
+            .topology-card {
+                padding: 1rem;
+            }
+            .header-meta {
+                gap: 0.75rem;
+            }
+            .header-meta .meta-item {
+                gap: 0.5rem;
+            }
+        }
+
+        /* ===== TOC Sidebar ===== */
+        .page-wrapper {
+            display: flex;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .container {
+            flex: 1;
+            min-width: 0;
+        }
+        .toc-sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            order: 1;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 3rem 1rem 3rem 1.5rem;
+            border-left: 1px solid var(--border);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            scrollbar-width: thin;
+        }
+        .toc-toggle {
+            display: none;
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 0.65rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            z-index: 1000;
+            transition: background 0.15s;
+        }
+        .toc-toggle:hover {
+            background: var(--accent-hover);
+        }
+        .toc-sidebar.mobile-open {
+            transform: translateX(0);
+        }
+        .toc-nav-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .toc-nav-list li {
+            margin-bottom: 0;
+            padding-left: 0;
+        }
+        .toc-nav-list a {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.3rem 0;
+            border-bottom: none;
+            border-radius: 3px;
+            line-height: 1.35;
+            transition: color 0.15s, background 0.15s;
+        }
+        .toc-nav-list a:hover {
+            color: var(--accent);
+            background: #2d2d3d;
+        }
+        .toc-nav-list a.active {
+            color: var(--accent);
+            font-weight: 700;
+            background: #1e2d4d;
+        }
+        .toc-h2 { font-weight: 600; font-size: 0.88rem; margin-top: 0.65rem; color: #e4e4e7; }
+        .toc-h3 { padding-left: 1rem; font-size: 0.82rem; }
+        .toc-h4 { padding-left: 2rem; font-size: 0.78rem; }
+
+        .toc-sidebar::-webkit-scrollbar { width: 4px; }
+        .toc-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        .toc-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 998;
+        }
+
+        @media (max-width: 1000px) {
+            .page-wrapper { flex-direction: column; }
+            .toc-sidebar {
+                position: fixed;
+                top: 0; right: 0;
+                background: var(--bg);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                z-index: 999;
+                box-shadow: var(--shadow-md);
+            }
+            .toc-toggle { display: block; }
+            .toc-backdrop.show { display: block; }
+        }
+
+        /* ===== Print ===== */
+        @media print {
+            .toc-sidebar, .toc-toggle, .toc-backdrop { display: none !important; }
+            .page-wrapper { display: block; margin: 0; max-width: 100%; }
+            body {
+                background: #fff;
+                font-size: 11pt;
+                line-height: 1.6;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            .topology-card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            a {
+                color: var(--text);
+                text-decoration: underline;
+            }
+        }
+    </style>
+</head>
+<body>
+<button class="toc-toggle" id="tocToggle">☰ Contents</button>
+<div class="toc-backdrop" id="tocBackdrop"></div>
+<div class="page-wrapper">
+    <nav class="toc-sidebar" id="tocSidebar">
+        <ul class="toc-nav-list">
+            <li><a href="#sec-0" class="toc-h2">0. Problem Framing</a></li>
+            <li><a href="#sec-1" class="toc-h2">1. The Tuba's Spectrum</a></li>
+            <li><a href="#sec-1-1" class="toc-h3">1.1 Bore Acoustics</a></li>
+            <li><a href="#sec-1-2" class="toc-h3">1.2 Nonlinear Excitation</a></li>
+            <li><a href="#sec-2" class="toc-h2">2. Distortion &amp; Overdrive DSP</a></li>
+            <li><a href="#sec-2-1" class="toc-h3">2.1 Waveshaping Theory</a></li>
+            <li><a href="#sec-2-2" class="toc-h3">2.2 Guitar-Amp Modeling</a></li>
+            <li><a href="#sec-2-3" class="toc-h3">2.3 Anti-Aliasing</a></li>
+            <li><a href="#sec-3" class="toc-h2">3. The Dubstep Wobble Chain</a></li>
+            <li><a href="#sec-4" class="toc-h2">4. Candidate Topologies</a></li>
+            <li><a href="#sec-4-1" class="toc-h4">4.1 Soft Symmetric Clipping</a></li>
+            <li><a href="#sec-4-2" class="toc-h4">4.2 Hard Symmetric Clipping</a></li>
+            <li><a href="#sec-4-3" class="toc-h4">4.3 Asymmetric / &ldquo;Tube-ish&rdquo;</a></li>
+            <li><a href="#sec-4-4" class="toc-h4">4.4 Foldback Distortion</a></li>
+            <li><a href="#sec-4-5" class="toc-h4">4.5 Bitcrushing / Decimation</a></li>
+            <li><a href="#sec-4-6" class="toc-h4">4.6 Multi-Stage &amp; Pre/Post-EQ</a></li>
+            <li><a href="#sec-4-7" class="toc-h4">4.7 Tape/Tube Saturation</a></li>
+            <li><a href="#sec-5" class="toc-h2">5. Low-Fundamental Concerns</a></li>
+            <li><a href="#sec-6" class="toc-h2">6. Evaluation Methodology</a></li>
+            <li><a href="#sec-7" class="toc-h2">7. Prioritized Reading List</a></li>
+            <li><a href="#sec-8" class="toc-h2">8. Experiment Sequence</a></li>
+            <li><a href="#sec-9" class="toc-h2">9. Open Questions</a></li>
+            <li><a href="#sec-airwindows" class="toc-h2">Airwindows Distortion Effects</a></li>
+            <li><a href="#sec-aw-identified" class="toc-h3">Effects Already Identified</a></li>
+            <li><a href="#sec-aw-12" class="toc-h3">12 Effects to Investigate</a></li>
+            <li><a href="#sec-aw-eff1" class="toc-h4">1. SingleEndedTriode</a></li>
+            <li><a href="#sec-aw-eff2" class="toc-h4">2. Shape</a></li>
+            <li><a href="#sec-aw-eff3" class="toc-h4">3. HardVacuum</a></li>
+            <li><a href="#sec-aw-eff4" class="toc-h4">4. Coils2</a></li>
+            <li><a href="#sec-aw-eff5" class="toc-h4">5. Pafnuty2</a></li>
+            <li><a href="#sec-aw-eff6" class="toc-h4">6. Inflamer</a></li>
+            <li><a href="#sec-aw-eff7" class="toc-h4">7. Focus</a></li>
+            <li><a href="#sec-aw-eff8" class="toc-h4">8. UnBox</a></li>
+            <li><a href="#sec-aw-eff9" class="toc-h4">9. Edge</a></li>
+            <li><a href="#sec-aw-eff10" class="toc-h4">10. Drive</a></li>
+            <li><a href="#sec-aw-eff11" class="toc-h4">11. Fracture2</a></li>
+            <li><a href="#sec-aw-eff12" class="toc-h4">12. Gringer</a></li>
+            <li><a href="#sec-aw-plan" class="toc-h3">Suggested Experiment Plan</a></li>
+            <li><a href="#sec-aw-excluded" class="toc-h3">Deliberately Excluded</a></li>
+            <li><a href="#sec-aw-honorable" class="toc-h3">Honorable Mentions</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+    <h1>Distortion &amp; Overdrive for Live Tuba&nbsp;Dubstep<br>Research Investigation Outline</h1>
+
+    <div class="header-meta">
+        <div class="meta-item">
+            <div class="meta-icon project">◆</div>
+            <div class="meta-body">
+                <div class="meta-label">Project</div>
+                <p>Real-time distortion/overdrive applied to a live tuba signal, placed <em>before</em> an LFO-modulated resonant lowpass filter — the dubstep &ldquo;wobble.&rdquo;</p>
+            </div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-icon goal">◇</div>
+            <div class="meta-body">
+                <div class="meta-label">Goal</div>
+                <p>A reading- and experiment-driven plan to choose distortion topologies that complement the tuba&rsquo;s harmonic spectrum. This is a <em>research outline</em>, not an implementation.</p>
+            </div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-icon chain">→</div>
+            <div class="meta-body">
+                <div class="meta-label">Signal Chain</div>
+                <p>Tuba (mic/DI) → <strong>[distortion/overdrive — the subject of this study]</strong> → resonant lowpass filter (LFO-modulated cutoff = the wobble) → output</p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- ===== SECTION 0 ===== -->
+    <h2 id="sec-0">0. Problem Framing &amp; Constraints <a href="#sec-0" class="anchor-link">#</a></h2>
+
+    <p><strong>Why distortion sits before the filter in dubstep:</strong> Distortion synthesizes dense upper harmonics from the (relatively sparse, fundamental-heavy) tuba signal. The modulated lowpass then <em>sweeps through</em> those harmonics, creating the animated, evolving timbre of the wobble. With a clean tuba, the filter has little to sweep over — distortion gives the filter a rich spectral substrate to sculpt.</p>
+
+    <p><strong>Constraints to keep in mind while reading:</strong></p>
+    <ul>
+        <li><strong>Real-time, low-latency</strong> live performance — favors cheap, sample-wise nonlinearities (waveshapers, one-pole/zero-based emulations) over full circuit solvers.</li>
+        <li><strong>Polyphonic/breath-driven input</strong> — the tuba is not a monophonic oscillator; amplitude, pitch, and breath noise vary continuously. Distortion must track dynamics gracefully (avoid sudden crossover artifacts).</li>
+        <li><strong>Low fundamental frequencies</strong> (tuba pedal notes can be ~29–50 Hz) — aliasing and intermodulation rules differ from guitar-distortion assumptions.</li>
+        <li><strong>Tuba is already rich but rounded</strong> at high dynamics (less "brassy bite" than trumpet) — distortion can either <em>restore</em> a brighter, more aggressive edge or <em>over-fatten</em> into mud.</li>
+    </ul>
+
+    <hr>
+
+    <!-- ===== SECTION 1 ===== -->
+    <h2 id="sec-1">1. Background Reading — The Tuba's Harmonic Spectrum <a href="#sec-1" class="anchor-link">#</a></h2>
+
+    <p>Read these to understand what the distortion has to work <em>with</em>.</p>
+
+    <h3 id="sec-1-1">1.1 Bore Acoustics &amp; Why the Tuba Spectrum Is the Way It Is <a href="#sec-1-1" class="anchor-link">#</a></h3>
+
+    <ul>
+        <li><strong>Campbell, M., Gilbert, J., &amp; Myers, A. (2021).</strong> <em>The Science of Brass Instruments</em>. Springer, <em>Modern Acoustics and Signal Processing</em> series. DOI: <a href="https://doi.org/10.1007/978-3-030-55686-0">10.1007/978-3-030-55686-0</a> — print ISBN 978-3-030-55684-6, ebook ISBN 978-3-030-55686-0. <em>(Verified.)</em> Definitive modern reference. Read the chapters on input impedance, bore profiles, and radiation. Why it matters: the tuba is a <em>truncated expanding (conical/horn) bore</em>, not cylindrical. Its upper harmonics are damped faster than a trumpet's (viscothermal wall losses in wide tubing), giving a <em>rounded, fundamental-heavy</em> spectrum that distortion will need to rebalance.</li>
+
+        <li><strong>Benade, A. H. (1976).</strong> <em>Fundamentals of Musical Acoustics</em>. Oxford University Press, 1976 (ISBN-13: 978-0195020304); unabridged Dover reprint, 1990 (ISBN-13: 978-0486264844, <a href="https://store.doverpublications.com/products/9780486264844">Dover product page</a>). <em>(Verified.)</em> The classic. Read the brass/cooperative-regime material. Why it matters: establishes how lip-reed + bore couple to lock in a harmonic regime.</li>
+
+        <li><strong>Benade, A. H. (1973).</strong> "The Physics of Brasses." <em>Scientific American</em>, 229(1), 24–35. Stable URL: <a href="https://www.jstor.org/stable/24923139">JSTOR 24923139</a> (also <a href="https://www.scientificamerican.com/article/the-physics-of-brasses/">Scientific American archive</a>). <em>(Verified — note page range is 24–35, not 24–32.)</em> Compact, readable overview; good entry point before the books.</li>
+    </ul>
+
+    <h3 id="sec-1-2">1.2 Nonlinear Excitation &amp; Dynamic-Dependent Spectral Enrichment <a href="#sec-1-2" class="anchor-link">#</a></h3>
+
+    <ul>
+        <li><strong>Soares, F., Cochelin, B., Freour, V., Vergez, C., &amp; Arimoto, K. (2025).</strong> "Nonlinear acoustics in brass instruments using 2D complex modal bases." <em>Acta Acustica</em>, 9, art. 68, 15 pp. DOI: <a href="https://doi.org/10.1051/aacus/2025049">10.1051/aacus/2025049</a> — open access, published 31 Oct 2025. <em>(Verified.)</em> Models nonlinear wave propagation / wave-front steepening. Why it matters: understand how the tuba <em>already</em> gains harmonics at loud dynamics (though less aggressively than trumpet, since the large bore spreads pressure over a bigger area). This tells you what a <em>good</em> artificial distortion should complement, not redundantly duplicate.</li>
+
+        <li><strong>Mattéoli, R., Gilbert, J., Terrien, S., Dalmont, J.-P., Vergez, C., Maugeais, S., &amp; Brasseur, E. (2022).</strong> "Diversity of ghost notes in tubas, euphoniums and saxhorns." <em>Acta Acustica</em>, 6, art. 32, 14 pp. DOI: <a href="https://doi.org/10.1051/aacus/2022026">10.1051/aacus/2022026</a> — open access, published 01 Aug 2022. <em>(Verified.)</em> <em>Ghost notes</em>: non-harmonic resonances between the pedal and the second regime, set by the bore expansion. Why it matters: distortion can excite/intermodulate these inharmonic modes — possibly a unique color to exploit, or a source of clangorous artifacts to suppress.</li>
+    </ul>
+
+    <div class="questions-box">
+        <h4>Questions to Answer from This Section</h4>
+        <ol>
+            <li>What is the <em>typical</em> amplitude rolloff of the tuba's harmonics (dB/harmonic or per octave) at soft vs. loud dynamics? (This is the input spectrum the waveshaper acts on.)</li>
+            <li>Where does the tuba's usable energy concentrate vs. where does it drop off? (Determines how hard you must drive distortion to get filter-sweepable upper harmonics.)</li>
+            <li>How inharmonic are the ghost notes relative to the harmonic series, and will distortion turn them into objectionable sidebands?</li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <!-- ===== SECTION 2 ===== -->
+    <h2 id="sec-2">2. Background Reading — Distortion &amp; Overdrive DSP <a href="#sec-2" class="anchor-link">#</a></h2>
+
+    <h3 id="sec-2-1">2.1 Waveshaping Theory <a href="#sec-2-1" class="anchor-link">#</a></h3>
+
+    <ul>
+        <li><strong>Arfib, D. (1979).</strong> "Digital Synthesis of Complex Spectra by Means of Multiplication of Nonlinear Functions." The canonical waveshaping paper: a memoryless nonlinearity <span class="math-inline">y = f(x)</span> driven by a sinusoid generates a harmonic series whose amplitudes are governed by the Chebyshev-polynomial decomposition of <span class="math-inline">f</span>. Why it matters: lets you <em>design</em> the added harmonics deliberately rather than blindly. ⚠️ Venue not machine-verified — commonly cited as <em>Computer Music Journal</em> vol 3 no 3 (1979); confirm exact issue/pages via JSTOR before citing.</li>
+
+        <li><strong>LeBrun, M. (1979).</strong> "Digital Waveshaping Synthesis of Musical Sounds." <em>Journal of the Audio Engineering Society</em>, 27(4), p. 250. <em>(Verified — corrected from an earlier "Computer Music Journal" assumption.)</em> Companion classic on waveshaping with a driving-index (amplitude) that morphs the spectrum. Why it matters: the tuba's own amplitude will act as this index — at low input gain the shaper stays linear, at loud notes it blooms. This <em>dynamics-tracking</em> behavior is exactly what you want for a breath-driven instrument.</li>
+
+        <li><strong>Roads, C.</strong> <em>The Computer Music Tutorial</em>. MIT Press — 1st ed. 1996 (ISBN 978-0262680820), 2nd ed. 2023 (ISBN 978-0262044912), <a href="https://mitpress.mit.edu/9780262044912/the-computer-music-tutorial/">MIT Press page</a>. <em>(Verified.)</em> Read the chapter on waveshaping — accessible summary; good for mapping Chebyshev polynomials to target spectra.</li>
+    </ul>
+
+    <h3 id="sec-2-2">2.2 Guitar-Amp / Diode / Tube Clipping Modeling <a href="#sec-2-2" class="anchor-link">#</a></h3>
+
+    <ul>
+        <li><strong>Yeh, D. T.</strong> <em>Digital Implementation of Musical Distortion Circuits</em> (PhD, Stanford University / CCRMA, ~2009). Why it matters: decomposes "overdrive" into its physical sources — diode anti-parallel soft clip, op-amp slew, tone stack — and gives efficient digital equivalents. ⚠️ Thesis public-PDF URL and exact year not machine-verified — check <a href="https://stack.stanford.edu">stack.stanford.edu</a> / search ProQuest for the definitive link.</li>
+
+        <li><strong>Yeh, D. T. &amp; Pakarinen, J. (2009).</strong> "A Review of Digital Techniques for Modeling Vacuum-Tube Guitar Amplifiers." <em>Computer Music Journal</em>, 33(2). <em>(Newly added; venue confirmed via Wikipedia source list, which lists pp. 89–90 — verify the full page range on JSTOR.)</em> Excellent single-paper overview that surveys the whole field — read this <em>first</em> before diving into Yeh's thesis and the individual circuit papers.</li>
+
+        <li><strong>Werner, K. J., Välimäki, V., &amp; Abel, J. S.</strong> — wave-digital-filter (WDF) emulation of distortion circuits (Tube Screamer / diode clipper, DAFx ~2015–16). Why it matters: WDF gives stable, real-time-feasible models of classic soft-clip topologies. ⚠️ Search the <a href="https://dafx.de/paper-archive/">DAFx paper archive</a> by author "Werner"; Werner also has a PhD thesis on WDF pedal modeling (likely Aalto University).</li>
+
+        <li><strong>Pakarinen, J. &amp; Karjalainen, M.</strong> — WDF modeling of distortion circuits / valve amplifiers. Why it matters: efficient tube-emulation references (e.g., the "Cox" / Richter-style tube models, mu-law style curves). ⚠️ Exact titles/venues not machine-verified — confirm via the DAFx archive / IEEE Xplore.</li>
+
+        <li><strong>Werner, K. J.</strong> "A Computational and Perceptual Study of the Boss DS-1 Distortion" (DAFx). Why it matters: hard-clipping-flavored distortion — a contrast to the Tube Screamer's soft clip. ⚠️ Exact year/co-authors not machine-verified.</li>
+
+        <li><strong>Zölzer, U. (ed.)</strong> <em>DAFX: Digital Audio Effects</em>, 2nd ed. John Wiley &amp; Sons, 2011 — print ISBN 978-0-470-66599-2, DOI: <a href="https://doi.org/10.1002/9781119991298">10.1002/9781119991298</a> (<a href="https://onlinelibrary.wiley.com/doi/book/10.1002/9781119991298">Wiley Online Library</a>). <em>(Verified.)</em> Textbook chapters on nonlinear processing.</li>
+    </ul>
+
+    <h3 id="sec-2-3">2.3 Anti-Aliasing for Nonlinearities <a href="#sec-2-3" class="anchor-link">#</a></h3>
+
+    <ul>
+        <li><strong>Bilbao, S., Esqueda, F., Parker, J. D., &amp; Välimäki, V. (2017).</strong> "Antiderivative Antialiasing for Memoryless Nonlinearities." <em>IEEE Signal Processing Letters</em>, 24(7), 1049–1053. DOI: <a href="https://doi.org/10.1109/LSP.2017.2675541">10.1109/LSP.2017.2675541</a>. <em>(Verified — note: year is <strong>2017</strong>, not 2015.)</em> The foundational ADAA method.</li>
+
+        <li><strong>Esqueda, F.</strong> — aliasing reduction in clipped/soft-clipped signals, and a PhD thesis on the topic.
+            <ul>
+                <li>Esqueda, F., Bilbao, S., &amp; Välimäki, V. (2016). "Aliasing reduction in clipped signals." <em>IEEE Trans. Signal Processing</em>, 64(20), 5255–5267. DOI: <a href="https://doi.org/10.1109/TSP.2016.2585091">10.1109/TSP.2016.2585091</a>. <em>(Verified.)</em></li>
+                <li>Esqueda, F., Välimäki, V., &amp; Bilbao, S. (2015). "Aliasing reduction in soft-clipping algorithms." <em>Proc. EUSIPCO</em>, Nice, pp. 1956–1960. DOI: <a href="https://doi.org/10.1109/EUSIPCO.2015.7362737">10.1109/EUSIPCO.2015.7362737</a>. <em>(Verified.)</em></li>
+                <li>Esqueda, F. F. (2018). <em>Aliasing Reduction in Nonlinear Audio Signal Processing</em>. PhD thesis, Aalto University. URN: <a href="https://urn.fi/URN:ISBN:978-952-60-7952-3">URN:ISBN:978-952-60-7952-3</a>. <em>(Verified.)</em></li>
+            </ul>
+        </li>
+
+        <li><strong>Parker, J. D., Zavalishin, V., &amp; Le Bivic, E. (2016).</strong> "Reducing the Aliasing of Nonlinear Waveshaping Using Continuous-Time Convolution." <em>Proc. DAFx-16</em>, Brno, pp. 1–8. <a href="https://dafx.de/paper-archive/2016/dafxpapers/20-DAFx-16_paper_41-PN.pdf">DAFx archive PDF</a>. <em>(Verified.)</em></li>
+
+        <li><strong>Brandt, E. (2001).</strong> "Hard Sync Without Aliasing." <em>Proc. ICMC-01</em>, Havana, pp. 365–368. <a href="http://www-2.cs.cmu.edu/~eli/papers/icmc01-hardsync.pdf">CMU PDF</a>. <em>(Verified — ICMC, not DAFx.)</em> Adjacent; lower priority.</li>
+
+        <li><strong>Huovilainen, A. (2004).</strong> "Non-Linear Digital Implementation of the Moog Ladder Filter." <em>Proc. DAFx-04</em>, Naples, pp. 61–64. <a href="https://dafx.de/paper-archive/2004/P_061.PDF">DAFx archive PDF</a>. <em>(Verified.)</em> Why it matters: your <em>filter</em> is resonant — its own nonlinear resonance can alias too.</li>
+    </ul>
+
+    <div class="questions-box">
+        <h4>Questions to Answer from This Section</h4>
+        <ol>
+            <li>Which nonlinearity families map cleanly to a Chebyshev decomposition (i.e., let you <em>predict and design</em> the tuba's post-distortion spectrum)? (waveshapers: yes; black-box circuit models: not directly.)</li>
+            <li>What is the real-time cost of each candidate vs. an ADAA stage, at sample rate 44.1/48/96 kHz?</li>
+            <li>How do symmetric vs. asymmetric clipping change the <em>even/odd harmonic balance</em> — and which balance suits the tuba?</li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <!-- ===== SECTION 3 ===== -->
+    <h2 id="sec-3">3. Background Reading — The Dubstep Wobble Chain &amp; Distortion↔Filter Interplay <a href="#sec-3" class="anchor-link">#</a></h2>
+
+    <ul>
+        <li><strong>Zölzer, <em>DAFX</em></strong> — sections on nonlinear processing <em>and</em> on time-varying / modulated filters; read the two together to reason about ordering.</li>
+        <li><strong>Roads, <em>The Computer Music Tutorial</em></strong> — chapters on subtractive synthesis + filters: the principle that a modulated filter is most expressive when fed a spectrally rich source.</li>
+        <li><strong>Sound on Sound / practitioner literature on "wobble bass" and "reese bass"</strong> — not academic, but documents the established studio technique. Specifically: <em>"Dubstep Basics"</em> by Peter Jenkins, <em>Sound on Sound</em>, <strong>July 2010</strong>; and <em>"Q. What's the best way to add sub-bass?"</em>, <em>Sound on Sound</em>, <strong>March 2014</strong>. <em>(Verified.)</em></li>
+        <li><strong>Missing-fundamental / virtual-pitch psychoacoustics</strong> — see Moore, B. C. J., <em>An Introduction to the Psychology of Hearing</em>, 6th ed. (Brill, 2013; ISBN 978-9004252424, <a href="https://brill.com/display/title/24210">Brill catalog</a>). <em>(Verified; covered in Ch. 6, "The Perception of Pitch".)</em> Why it matters: distortion-generated upper harmonics let the brain <em>infer</em> a stronger, louder bass than the tuba physically radiates.</li>
+    </ul>
+
+    <div class="questions-box">
+        <h4>Questions to Answer from This Section</h4>
+        <ol>
+            <li>Is there a principled gain-staging rule (drive amount vs. filter resonance vs. LFO depth) that maximizes wobble expressiveness without muddying the tuba's lowest octave?</li>
+            <li>Where does the missing-fundamental effect start to dominate — i.e., how few low harmonics can you keep and still hear a solid bass?</li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <!-- ===== SECTION 4 ===== -->
+    <h2 id="sec-4">4. Candidate Distortion Topologies to Evaluate <a href="#sec-4" class="anchor-link">#</a></h2>
+
+    <p>For each candidate: (a) the DSP form, (b) the papers to read, (c) the <em>harmonic behavior</em>, and (d) a hypothesis about tuba fit. Plan to implement all of these as switchable modules so you can A/B them on real tuba recordings.</p>
+
+    <!-- 4.1 -->
+    <div class="topology-card">
+        <h4 id="sec-4-1"><span class="card-num">4.1</span> Soft Symmetric Clipping (tanh / cubic) <a href="#sec-4-1" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Form:</span> <span class="math-inline">y = tanh(gx)</span>, or 3rd-order polynomial <span class="math-inline">y = x − αx³</span>.</p>
+        <p><span class="field-label">Read:</span> §2.1 (Arfib, LeBrun — Chebyshev view); §2.2 (Tube Screamer soft clip); §2.3 (ADAA on tanh).</p>
+        <p><span class="field-label">Harmonics:</span> Odd-dominant, smoothly increasing with drive; gentle.</p>
+        <p><span class="field-label">Tuba-fit:</span> <strong>Good default.</strong> Adds odd harmonics that brighten the rounded tuba core without harsh even-order coloration; the smooth knee respects breath dynamics. Risk: can sound "fuzzy" rather than "growly" at the wobble's filter-down position.</p>
+    </div>
+
+    <!-- 4.2 -->
+    <div class="topology-card">
+        <h4 id="sec-4-2"><span class="card-num">4.2</span> Hard Symmetric Clipping <a href="#sec-4-2" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Form:</span> <span class="math-inline">y = clip(gx, −1, 1)</span>.</p>
+        <p><span class="field-label">Read:</span> Werner, Boss DS-1 study (§2.2); §2.3 (ADAA — <em>essential</em> here).</p>
+        <p><span class="field-label">Harmonics:</span> Strong odd + a dense, broadband plateau as drive increases; aggressive "square-ish" character.</p>
+        <p><span class="field-label">Tuba-fit:</span> <strong>Good for the "filthy" extreme.</strong> Gives the wobble real bite when the filter opens. Risk: at low fundamentals the aliasing and intermodulation can turn the tuba's breath/noise components into grit; needs heavy ADAA and possibly an oversampling decision.</p>
+    </div>
+
+    <!-- 4.3 -->
+    <div class="topology-card">
+        <h4 id="sec-4-3"><span class="card-num">4.3</span> Asymmetric / Half-Wave / "Tube-ish" Clipping <a href="#sec-4-3" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Form:</span> Different shaping for positive vs. negative half-cycles (e.g., one diode path); or a single-ended tube <em>I−V</em> curve.</p>
+        <p><span class="field-label">Read:</span> §2.2 (Pakarinen/Karjalainen tube models; Yeh tube sections); §2.1 (even-harmonic injection via Chebyshev-2 term).</p>
+        <p><span class="field-label">Harmonics:</span> Introduces <em>even</em> harmonics (2nd, 4th…) → warmer, "fatter," more "tube/saturated" timbre.</p>
+        <p><span class="field-label">Tuba-fit:</span> <strong>Very promising.</strong> The tuba's natural spectrum is odd-ish and fundamental-heavy; injecting controlled even harmonics can fatten the wobble's body and give a warmer subharmonic presence. Worth tuning the even/odd ratio against §1 measurements.</p>
+    </div>
+
+    <!-- 4.4 -->
+    <div class="topology-card">
+        <h4 id="sec-4-4"><span class="card-num">4.4</span> Foldback Distortion <a href="#sec-4-4" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Form:</span> Beyond a threshold, the signal <em>folds back</em> instead of clipping (e.g., triangle-wave reflection).</p>
+        <p><span class="field-label">Read:</span> Zölzer, <em>DAFX</em> nonlinear section; search "foldback distortion" in DAFx/AES proceedings.</p>
+        <p><span class="field-label">Harmonics:</span> Introduces dense, partly <em>inharmonic</em> content and intermodulation; chaotic at high drive.</p>
+        <p><span class="field-label">Tuba-fit:</span> <strong>Special-effect, use sparingly.</strong> Could produce an interesting metallic, "FM-ish" growl — but watch the ghost-note interaction (§1.2). Good for a deliberate "breakdown" color, not the default wobble.</p>
+    </div>
+
+    <!-- 4.5 -->
+    <div class="topology-card">
+        <h4 id="sec-4-5"><span class="card-num">4.5</span> Bitcrushing / Decimation <a href="#sec-4-5" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Form:</span> Sample-rate reduction + bit-depth reduction.</p>
+        <p><span class="field-label">Read:</span> Zölzer, <em>DAFX</em>; search decimator distortion in DAFx.</p>
+        <p><span class="field-label">Harmonics:</span> Aliasing <em>is</em> the effect (folded-in inharmonic images); characteristically digital/lo-fi.</p>
+        <p><span class="field-label">Tuba-fit:</span> <strong>Niche.</strong> A taste color, not a wobble main. The inharmonic aliasing fights the harmonic-series premise the wobble relies on. Consider only as an occasional textural layer.</p>
+    </div>
+
+    <!-- 4.6 -->
+    <div class="topology-card">
+        <h4 id="sec-4-6"><span class="card-num">4.6</span> Cascaded / Multi-Stage &amp; Pre/Post-EQ <a href="#sec-4-6" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Form:</span> Clipper preceded/followed by shelving/peaking EQ; multiple soft-clip stages.</p>
+        <p><span class="field-label">Read:</span> §2.2 (Werner DS-1; Yeh Tube Screamer tone-stack); study how the tone stack <em>shapes</em> which harmonics survive into the filter.</p>
+        <p><span class="field-label">Harmonics:</span> Sculptable — pre-EQ can emphasize the tuba's upper formants before clipping.</p>
+        <p><span class="field-label">Tuba-fit:</span> <strong>Probably the real winner.</strong> Because the tuba's upper harmonics are weak, a pre-clip high-shelf boost can give the clipper more to work with, and a post-clip tilt can keep the low octave clean. This ties directly to §1's spectrum measurements.</p>
+    </div>
+
+    <!-- 4.7 -->
+    <div class="topology-card">
+        <h4 id="sec-4-7"><span class="card-num">4.7</span> Tape/Tube Saturation Emulations <a href="#sec-4-7" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Form:</span> tanh-ish + bias + hysteresis-ish memory; or transformer saturation curves.</p>
+        <p><span class="field-label">Read:</span> §2.2 (Pakarinen tube); search tape-saturation modeling.</p>
+        <p><span class="field-label">Harmonics:</span> Low-order, mostly odd + gentle even; dynamic (level-dependent).</p>
+        <p><span class="field-label">Tuba-fit:</span> <strong>Good "always-on" gentle overdrive</strong> that fattens without obvious clipping; pairs well with the breath-driven dynamic index from LeBrun (§2.1).</p>
+    </div>
+
+    <hr>
+
+    <!-- ===== SECTION 5 ===== -->
+    <h2 id="sec-5">5. Anti-Aliasing &amp; Low-Fundamental-Specific Concerns <a href="#sec-5" class="anchor-link">#</a></h2>
+
+    <p>Because the tuba's fundamental can sit near <strong>29–50 Hz</strong>, the "aliasing budget" differs from guitar thinking:</p>
+
+    <ul>
+        <li>A waveshaper <span class="math-inline">f(x)</span> of polynomial degree <span class="math-inline">N</span> on a sinusoid at <span class="math-inline">f₀</span> produces harmonics up to <span class="math-inline">N f₀</span>. At <span class="math-inline">f₀ = 40</span> Hz even a high-order shaper stays comfortably in-band — <strong>so aliasing from pure harmonic generation is mild.</strong></li>
+        <li><strong>The real danger is intermodulation:</strong> the tuba is <em>not</em> a pure sinusoid. Two close tones <span class="math-inline">f₁, f₂</span> through a nonlinearity produce intermodulation products <span class="math-inline">|m f₁ ± n f₂|</span> that can fall back into the audible band as mud or beating. Read §2.3 with <em>intermodulation</em> (not just harmonic aliasing) in mind.</li>
+    </ul>
+
+    <p><strong>Action items to plan:</strong></p>
+    <ol>
+        <li>Decide an oversampling factor (2× vs 4×) vs. ADAA-only — trade CPU against alias performance. Plan a measurement (see §6).</li>
+        <li>For hard clipping / foldback / bitcrushing, treat anti-aliasing/oversampling as mandatory, not optional.</li>
+        <li>Check whether ADAA <em>changes the harmonic character you designed</em> (it can dull transients / shift the effective curve) — verify against the Chebyshev-designed spectrum.</li>
+    </ol>
+
+    <hr>
+
+    <!-- ===== SECTION 6 ===== -->
+    <h2 id="sec-6">6. Evaluation Methodology <a href="#sec-6" class="anchor-link">#</a></h2>
+
+    <p>Plan these measurements <em>before</em> choosing a topology, using real tuba recordings (several pitches across the register, soft→loud dynamics).</p>
+
+    <ol>
+        <li><strong>Input spectrum characterization.</strong> Long-term FFT / constant-Q of dry tuba at each register &amp; dynamic; extract harmonic rolloff slope and locate ghost-note energy. (Grounded in §1.)</li>
+        <li><strong>Output spectrum per topology &amp; drive level.</strong> For each candidate in §4, measure the post-distortion spectrum: harmonic extension, even/odd ratio, intermodulation products, noise floor.</li>
+        <li><strong>Aliasing test.</strong> Feed a clean low-frequency sine + one inharmonic component (mimicking a ghost note) through each topology; inspect for foldover. Quantify alias floor with and without ADAA / oversampling (§5).</li>
+        <li><strong>Full-chain test.</strong> Distortion → your resonant lowpass with a slow LFO sweep. Record: clarity of the lowest octave, "sweep interest" (how much spectral motion the filter has to work with), harshness/clangor at high resonance + high drive.</li>
+        <li><strong>Psychoacoustic / subjective listening.</strong> Per Moore (§3): does the missing-fundamental effect deliver a <em>perceived</em> stronger bass? Run informal A/B with reference dubstep wobble tones. Define a rating rubric (e.g., 1–5 on: bass weight, clarity, growl, aliasing/clangor, dynamic responsiveness).</li>
+        <li><strong>Real-time feasibility.</strong> Measure per-sample CPU of each topology + its required anti-aliasing at target sample rate / block size; confirm latency budget for live use.</li>
+    </ol>
+
+    <hr>
+
+    <!-- ===== SECTION 7 ===== -->
+    <h2 id="sec-7">7. Prioritized Reading List <a href="#sec-7" class="anchor-link">#</a></h2>
+
+    <p><span class="tier-label tier-1">Tier 1</span> <strong>Read first — frames the whole problem:</strong></p>
+    <ol>
+        <li>Benade (1973), "The Physics of Brasses" — quick brass-acoustics primer.</li>
+        <li>Campbell, Gilbert &amp; Myers (2021), <em>The Science of Brass Instruments</em> — bore, impedance, radiation (skim the brass chapters).</li>
+        <li>Arfib (1979) + LeBrun (1979, <strong>JAES</strong>) — waveshaping / Chebyshev foundations.</li>
+        <li>Zölzer, <em>DAFX</em> (2nd ed., <strong>2011</strong>) — nonlinear-processing and filter chapters (reference backbone).<br><small style="color: var(--text-muted);"><em>(Optional fast primer)</em> Yeh &amp; Pakarinen (2009), "A Review of Digital Techniques for Modeling Vacuum-Tube Guitar Amplifiers," <em>CMJ</em> 33(2) — a one-paper survey of the modeling field before going deep.</small></li>
+    </ol>
+
+    <p><span class="tier-label tier-2">Tier 2</span> <strong>Design &amp; modeling:</strong></p>
+    <ol start="5">
+        <li>Yeh (CCRMA thesis + Tube Screamer papers) — overdrive decomposition.</li>
+        <li>Werner et al. WDF distortion + Boss DS-1 study — efficient circuit-style models.</li>
+        <li>Pakarinen &amp; Karjalainen — tube/valve emulation (for §4.3, §4.7).</li>
+        <li>Mattéoli et al. (2022) — tuba ghost notes (shapes §1.2 and §4.4 decisions).</li>
+        <li>Soares et al. (2025) — nonlinear brass propagation (informs what's already "distorted" in the tuba).</li>
+    </ol>
+
+    <p><span class="tier-label tier-3">Tier 3</span> <strong>Anti-aliasing &amp; polish (read before finalizing any candidate):</strong></p>
+    <ol start="10">
+        <li>Bilbao et al. (<strong>2017</strong>), ADAA — <em>IEEE Signal Processing Letters</em>.</li>
+        <li>Esqueda (2016 IEEE TSP + 2015 EUSIPCO + 2018 Aalto PhD thesis) — aliasing reduction in clipped/soft-clipped signals.</li>
+        <li>Parker, Zavalishin &amp; Le Bivic (2016) — "Reducing the Aliasing of Nonlinear Waveshaping Using Continuous-Time Convolution," <em>DAFx-16</em>.</li>
+        <li>Huovilainen (2004) — nonlinear Moog ladder, <em>DAFx-04</em> (so the resonant wobble filter is alias-managed too).</li>
+    </ol>
+
+    <p><span class="tier-label tier-4">Tier 4</span> <strong>Context &amp; psychoacoustics:</strong></p>
+    <ol start="14">
+        <li>Moore, <em>Psychology of Hearing</em> — missing fundamental / virtual pitch.</li>
+        <li>Roads, <em>Computer Music Tutorial</em> — subtractive/filtering context.</li>
+        <li>Practitioner references: SOS articles on wobble/reese bass and sub-bass technique (verify idiomatic gain staging).</li>
+    </ol>
+
+    <hr>
+
+    <!-- ===== SECTION 8 ===== -->
+    <h2 id="sec-8">8. Suggested Experiment Sequence <a href="#sec-8" class="anchor-link">#</a></h2>
+
+    <ol class="step-list">
+        <li><strong>Capture &amp; characterize</strong> dry tuba (§6.1) — establish the input you're shaping.</li>
+        <li><strong>Implement a Chebyshev-driven waveshaper</strong> (§4.1/§2.1) as the controlled baseline; verify measured output spectrum equals the designed one.</li>
+        <li><strong>Add the candidates</strong> from §4 one at a time behind a switch; measure each per §6.2–6.3.</li>
+        <li><strong>Integrate the resonant modulated lowpass</strong> and run §6.4.</li>
+        <li><strong>Harden against aliasing/intermodulation</strong> per §5 and re-measure (§6.3) after adding ADAA/oversampling.</li>
+        <li><strong>Listening tests + rubric</strong> (§6.5); pick a default and 1–2 alternates.</li>
+        <li><strong>Profile CPU/latency</strong> (§6.6) for live use; finalize.</li>
+    </ol>
+
+    <hr>
+
+    <!-- ===== SECTION 9 ===== -->
+    <h2 id="sec-9">9. Open Questions to Resolve During Reading <a href="#sec-9" class="anchor-link">#</a></h2>
+
+    <ul>
+        <li>Does the tuba's <em>rounded</em> high-dynamic spectrum mean we should lean toward <em>asymmetric/even-harmonic</em> distortion (to add color the instrument lacks) or <em>odd-harmonic</em> (to reinforce its natural direction)? (Cross-reference §1 + §4.3.)</li>
+        <li>How much of the tuba's character should survive the distortion vs. be replaced by a "bass synth" character? (Artistic; inform the rubric in §6.5.)</li>
+        <li>Is 2× oversampling + ADAA1 enough, or do hard-clip/foldback paths force 4× + ADAA2? (§5.)</li>
+        <li>Do ghost notes (§1.2) become a <em>feature</em> (unique metallic wobble) or a <em>bug</em> (clangor) under each topology? (§4.4 especially.)</li>
+        <li>Pre-clip EQ shaping (§4.6): which tuba formant band is the most rewarding to boost before clipping?</li>
+    </ul>
+
+    <hr>
+
+    <span class="status-badge">Status: outline only. No DSP code written. Use §7 as your reading roadmap and §8 as your build sequence.</span>
+
+    <hr>
+
+    <!-- ===== AIRWINDOWS SECTION ===== -->
+    <h2 id="sec-airwindows">Airwindows Distortion Effects for Dubstep Wobble&nbsp;Bass <a href="#sec-airwindows" class="anchor-link">#</a></h2>
+
+    <p>A list of Airwindows effects to investigate as <strong>pre-filter distortion</strong> in a dubstep wobble chain:</p>
+
+    <p><code>source (tuba/bass/synth) → [distortion] → resonant lowpass (LFO-modulated cutoff = wobble) → out</code></p>
+
+    <p><strong>Why distortion sits before the filter:</strong> distortion synthesizes dense upper harmonics from a (relatively sparse, fundamental-heavy) signal. The modulated lowpass then sweeps <em>through</em> those harmonics, producing the animated, evolving wobble timbre. With a clean source the filter has little to sweep over — distortion gives the filter a rich spectral substrate to sculpt. The 12 picks below are mapped to the seven topology families in <a href="#sec-4">§4</a> so you can A/B different <em>families</em> of color, not just different knobs.</p>
+
+    <p>Primary source for descriptions: <code>Airwindopedia.txt</code>. One-line summaries cross-checked against <code>what.txt</code>.</p>
+
+    <h3 id="sec-aw-identified">Effects You've Already Identified <a href="#sec-aw-identified" class="anchor-link">#</a></h3>
+
+    <p>These three already cover a lot — an input-stage saturator (Mackity), a sampler output clipper (ZOutputStage), and a full bass-amp-style multi-band drive (BassDrive). The 12 below fill in the <em>other</em> topology families.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Effect</th>
+                <th>What it is</th>
+                <th>Topology family</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Mackity</strong></td>
+                <td>Emulation of the input stage of a vintage (pre-VLZ) Mackie 1202 — "spongy slam and gleaming brain-fry overload," turns electronic music into "a wall of roaring shrapnel." Op-amp/input-stage saturation, not a stompbox.</td>
+                <td>Cascaded analog input-stage saturation (≈ 4.6)</td>
+            </tr>
+            <tr>
+                <td><strong>ZOutputStage</strong></td>
+                <td>The output clipping stage from the Emu e6400-style Z filters — analog-output hard-ish clipping with sampler character.</td>
+                <td>Hard clipping w/ analog character (≈ 4.2)</td>
+            </tr>
+            <tr>
+                <td><strong>BassDrive</strong></td>
+                <td>SansAmp-Bass-DI-inspired bass amp: biquad EQ bands voiced weirdly + heavy Airwindows overdrive inside each band. A multi-stage, pre/post-EQ bass distortion — "dark magic" secret weapon.</td>
+                <td>Cascaded multi-stage w/ pre/post-EQ (4.6) — purpose-built for bass</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 id="sec-aw-12">12 Effects to Investigate <a href="#sec-aw-12" class="anchor-link">#</a></h3>
+
+    <p>Ordered roughly from "workhorse/fattening" → "special-effect/extreme."</p>
+
+    <!-- Effect 1 -->
+    <div class="topology-card">
+        <h4 id="sec-aw-eff1"><span class="card-num">1.</span> SingleEndedTriode — asymmetric single-ended tube saturation <a href="#sec-aw-eff1" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Topology:</span> §4.3 Asymmetric / "tube-ish" clipping (even harmonics → warmer, fatter).</p>
+        <p>Asymmetrical, gain-staged saturation that works like a single-ended triode stage: it offsets the waveform and drives into saturation with a <em>bias voltage</em>, then subtracts a related voltage and scales by drive amount. Because the shaping is asymmetric it injects <strong>even harmonics</strong> — exactly what the research flags as "very promising" for a fundamental-heavy source: it fattens the wobble's body and gives a warmer subharmonic presence without harsh odd-order coloration. A strong candidate for the "always-on" tube character layer.</p>
+    </div>
+
+    <!-- Effect 2 -->
+    <div class="topology-card">
+        <h4 id="sec-aw-eff2"><span class="card-num">2.</span> Shape — asymmetric sin/asin waveshaper for warmth <a href="#sec-aw-eff2" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Topology:</span> §4.3 Asymmetric waveshaping (even harmonics).</p>
+        <p>Built on the same complementary <code>sin()</code>/<code>asin()</code> technology as Console, but lets you pick which half of the waveform to hit harder and offset it. The <strong>bass-warmth</strong> use case: more Shape → triangle-ey result out of a sine; less Shape → squarer result; lean the Offset to tune the even-harmonic warmth. Pair it with a sine-heavy source to turn a dull fundamental into a rich, sweepable substrate. Very transparent — stackable.</p>
+    </div>
+
+    <!-- Effect 3 -->
+    <div class="topology-card">
+        <h4 id="sec-aw-eff3"><span class="card-num">3.</span> HardVacuum — tube-style saturation <a href="#sec-aw-eff3" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Topology:</span> §4.7 Tape/tube saturation emulation (gentle, level-dependent).</p>
+        <p>"Tube style saturation effects" — the gentle, dynamic overdrive family the research calls a good "always-on" layer. Low-order, mostly odd with gentle even content. Like most tube/saturation emulations it is level-dependent (more drive = more harmonic content), so the color intensifies with the player's dynamics rather than sitting as a static wall — the kind of "always-on" gentle overdrive the research's §4.7 recommends for fattening without obvious clipping.</p>
+    </div>
+
+    <!-- Effect 4 -->
+    <div class="topology-card">
+        <h4 id="sec-aw-eff4"><span class="card-num">4.</span> Coils2 — transformer overdrive / hysteresis emulator <a href="#sec-aw-eff4" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Topology:</span> §4.7 Saturation (transformer, distinct from tube).</p>
+        <p>Two controls: <strong>Saturation</strong> (how hard the transformer clamps down) and <strong>Cheapness</strong> (narrows the band of clean sonority so you hear the transformer "crap out," with a core magnetizing/hysteresis effect). It's a different saturation <em>character</em> from tube — bandpass-y, grindy, with hysteresis. Useful as a contrasting color stacked with a tube plugin, and the band-narrowing means you can keep some clean lows/highs around the distorted band — handy for keeping the lowest wobble octave intact.</p>
+    </div>
+
+    <!-- Effect 5 -->
+    <div class="topology-card">
+        <h4 id="sec-aw-eff5"><span class="card-num">5.</span> Pafnuty2 — Chebyshev harmonic generator <a href="#sec-aw-eff5" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Topology:</span> §2.1 Waveshaping theory (Chebyshev decomposition) — the <em>theory core</em>.</p>
+        <p>A Chebyshev-based filter that <strong>adds harmonics deliberately and predictably</strong>. The outline's Tier-1 reading (Arfib 1979, LeBrun 1979) is literally about designing the added harmonic series via Chebyshev polynomials — this is that idea in plugin form. The key trick: add <em>just a few</em> odd harmonics and, since you're not really saturating but transforming, you get <strong>zero aliasing</strong> as long as the added harmonics stay below Nyquist. That matters a lot for low fundamentals (tuba pedal notes ~29–50 Hz), where the research warns intermodulation/aliasing is the real danger. A clean, predictable harmonic-substrate generator for the filter to sweep.</p>
+    </div>
+
+    <!-- Effect 6 -->
+    <div class="topology-card">
+        <h4 id="sec-aw-eff6"><span class="card-num">6.</span> Inflamer — Oxford-Inflator-style waveshapers <a href="#sec-aw-eff6" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Topology:</span> §2.1 / §4.1 Waveshaping (manual curve blend + bit-shift drive).</p>
+        <p>An Airwindows take on the Oxford Inflator: two waveshapers blended via a manual <strong>Effect</strong> control (a dry/wet between the two curves), with <strong>Drive</strong> done as bit-shift input gain (very accurate divisions by powers of two). Drive sets how hard the shapers are hit; Effect lets you pick the curve color manually. This gives a controllable, sonically-optimized harmonic boost — not a static clip — where you can separately dial <em>intensity</em> (Drive) and <em>character</em> (Effect).</p>
+    </div>
+
+    <!-- Effect 7 -->
+    <div class="topology-card">
+        <h4 id="sec-aw-eff7"><span class="card-num">7.</span> Focus — bandpass-focused multi-algorithm distortion <a href="#sec-aw-eff7" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Topology:</span> §4.6 Cascaded/multi-stage w/ pre/post-EQ <strong>+</strong> §5 anti-aliasing — likely the best all-in-one.</p>
+        <p>Built on <strong>UnBox</strong>'s aliasing-resistant distortion, but focuses it on a <strong>bandpass</strong> (voiced around Fletcher-Munson sensitivity) while letting clean lows and highs pass through. On top of that it lets you switch between five Airwindows distortion algorithms — <strong>Density, Drive, Spiral, Mojo, Dyno</strong> — and dial the Focus band from "broad overdrive" down to an "ultra-focussed mid laser." This is almost a direct implementation of the research's §4.6 conclusion ("probably the real winner"): pre-clip band emphasis + clean low-end retention + aliasing resistance, in one plugin. If you only audition one plugin from this list, make it this one.</p>
+    </div>
+
+    <!-- Effect 8 -->
+    <div class="topology-card">
+        <h4 id="sec-aw-eff8"><span class="card-num">8.</span> UnBox — aliasing-resistant distortion <a href="#sec-aw-eff8" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Topology:</span> §5 Anti-aliasing for nonlinearities — "only harmonics that don't alias are allowed to distort."</p>
+        <p>Takes the dry→distorted difference, averages it, and highpasses the <em>distortion part</em> only, so high-frequency artifacts that would alias are suppressed while clean lows/highs pass untouched. The research's §5 is explicit that for low fundamentals + hard nonlinear topologies, anti-aliasing/oversampling is <em>mandatory, not optional</em> — UnBox is the Airwindows answer to that constraint without brute oversampling. Useful both on its own and as the conceptual parent of Focus (#7).</p>
+    </div>
+
+    <!-- Effect 9 -->
+    <div class="topology-card">
+        <h4 id="sec-aw-eff9"><span class="card-num">9.</span> Edge — seven-stage hard clipping with inter-stage filtering <a href="#sec-aw-eff9" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Topology:</span> §4.6 Cascaded multi-stage w/ inter-stage filtering (high-gain variant).</p>
+        <p>Seven stages of hard clipping with <strong>Hypersonic-style steep filtering between each stage</strong>, plus a Lowpass tone control (doubles as the ultrasonic/aliasing filter and can be set from 25 kHz down into deep bass). This is the high-gain, guitar-DI-system flavor of "cascaded clipper with tone shaping between stages" — the structure the research says sculpts <em>which harmonics survive into the filter</em>. Crank it for the "filthy" open-filter extreme; the inter-stage phase shifts give a distinctive resonant-ish tone at the cutoff.</p>
+    </div>
+
+    <!-- Effect 10 -->
+    <div class="topology-card">
+        <h4 id="sec-aw-eff10"><span class="card-num">10.</span> Drive — pure aggressive / "angry" distortion <a href="#sec-aw-eff10" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Topology:</span> §4.1–4.2 Soft/hard clipping — grit &amp; crunch.</p>
+        <p>"All about grit and crunch, not smooth." If your sole goal is "big and fat" you'd reach for Density; Drive is for when you want something to sound <strong>angry</strong> — straight-up pissed-off rather than fat or edgy. A simple, characterful workhorse for the bright, aggressive end of the wobble when the filter opens up. (Note: Drive is also one of the five algorithms inside Focus #7, so audition it there first if you want to A/B quickly.)</p>
+    </div>
+
+    <!-- Effect 11 -->
+    <div class="topology-card">
+        <h4 id="sec-aw-eff11"><span class="card-num">11.</span> Fracture2 — West Coast wavefolder <a href="#sec-aw-eff11" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Topology:</span> §4.4 Foldback distortion (inharmonic, metallic/FM-ish growl).</p>
+        <p>A straight-up West Coast <strong>wavefolder</strong> with Drive, Fracture, Threshold, Output and Dry/Wet. Folding produces dense, partly <em>inharmonic</em> content and intermodulation — chaotic at high drive. The research calls foldback a "special-effect, use sparingly" topology that can yield an interesting metallic, "FM-ish" growl — a deliberate "breakdown" color rather than the default wobble. Great for a contrasting section or a gnarlier second layer; watch ghost-note interaction if your source has inharmonic resonances.</p>
+    </div>
+
+    <!-- Effect 12 -->
+    <div class="topology-card">
+        <h4 id="sec-aw-eff12"><span class="card-num">12.</span> Gringer — full-wave rectifier / octave-up (Green&nbsp;Ringer) <a href="#sec-aw-eff12" class="anchor-link">#</a></h4>
+        <p><span class="field-label">Topology:</span> §4.3-adjacent special color (even-harmonic / octave generation).</p>
+        <p>No-controls emulation of the Dan Armstrong Green Ringer: <strong>full-wave rectification</strong>, which generates the octave (2nd harmonic) above the input — the classic octave-up-fuzz bass trick. With wide-bandwidth biquads mimicking analog I/O caps. A distinctive even-harmonic color that can make a bass/tuba wobble read as more "synth"/"reese"-like. Special-effect territory like Fracture2 — try it on a parallel bus rather than the main chain.</p>
+    </div>
+
+    <h3 id="sec-aw-plan">Suggested Experiment Plan <a href="#sec-aw-plan" class="anchor-link">#</a></h3>
+
+    <ol class="step-list">
+        <li><strong>Start with Focus (#7)</strong> — it covers five algorithms + bandpass focus + anti-aliasing in one plugin, so it's the fastest way to map which <em>topology family</em> your source responds to.</li>
+        <li><strong>Add an even-harmonic layer</strong> (#1 SingleEndedTriode, #2 Shape, or #3 HardVacuum) for body/warmth — the research flags even-harmonic injection as very promising for a fundamental-heavy source.</li>
+        <li><strong>Test aliasing on low fundamentals</strong> (#5 Pafnuty2 for alias-free harmonic injection, #8 UnBox for aliasing-resistant clipping) — the §5 caveat about intermodulation at ~29–50 Hz is the main technical risk.</li>
+        <li><strong>Reserve the special colors</strong> (#11 Fracture2, #12 Gringer) for breaks/parallel layers, not the default wobble.</li>
+        <li><strong>Full-chain test:</strong> each candidate → your resonant lowpass with a slow LFO sweep; rate clarity of the lowest octave, "sweep interest," and harshness/clangor at high resonance + high drive (per the outline's §6 rubric).</li>
+    </ol>
+
+    <h3 id="sec-aw-excluded">Deliberately Excluded: Bitcrushing / Decimation (Topology&nbsp;4.5) <a href="#sec-aw-excluded" class="anchor-link">#</a></h3>
+
+    <p>The research outline classifies bitcrushing/decimation as <strong>"niche… a taste color, not a wobble main"</strong> — the inharmonic aliasing it produces fights the harmonic-series premise the wobble relies on. For that reason no bitcrusher (e.g. <strong>DeRez4</strong>, <strong>BitGlitter</strong>, <strong>Pockey2</strong>) appears in the 12 above. If you want a deliberately digital/lo-fi textural layer on a <em>parallel</em> bus for a breakdown section, DeRez4 is the most refined of the Airwindows retro-digital crushers and is worth a listen in that limited role.</p>
+
+    <h3 id="sec-aw-honorable">Honorable Mentions <a href="#sec-aw-honorable" class="anchor-link">#</a></h3>
+
+    <p>Covered by, or adjacent to, the twelve above:</p>
+    <ul>
+        <li><strong>Spiral2</strong> — "the best smoothest distortion algorithm," with a Presence control; also one of the five algorithms inside Focus.</li>
+        <li><strong>Density3</strong> — swiss-army-knife saturation/antisaturation; also an algorithm inside Focus.</li>
+        <li><strong>Trianglizer</strong> — waveshaper that turns sines into triangles (controlled odd-harmonic injection); a more specialized alternative to Pafnuty2.</li>
+        <li><strong>Distortion</strong> — "slightly dark analog-style distortion with several presets, like Focus"; a simpler, darker cousin of Focus.</li>
+        <li><strong>MultiBandDistortion</strong> — "old weird gnarly sound wrecker"; worth a listen if you want deliberately ugly, lo-fi-mangled wobble.</li>
+    </ul>
+
+    <hr class="footer-rule">
+
+</div> <!-- end container -->
+</div> <!-- end page-wrapper -->
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const navLinks = document.querySelectorAll('.toc-nav-list a');
+    const headers = document.querySelectorAll('h2[id], h3[id], h4[id]');
+
+    let activeId = null;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                activeId = entry.target.id;
+            } else if (activeId === entry.target.id) {
+                activeId = null;
+            }
+        });
+        if (activeId) {
+            navLinks.forEach(link => link.classList.remove('active'));
+            const activeLink = document.querySelector(`.toc-nav-list a[href="#${activeId}"]`);
+            if (activeLink) activeLink.classList.add('active');
+        }
+    }, { rootMargin: '0px 0px -75% 0px', threshold: 0 });
+
+    headers.forEach(h => observer.observe(h));
+
+    const toggleBtn = document.getElementById('tocToggle');
+    const sidebar = document.getElementById('tocSidebar');
+    const backdrop = document.getElementById('tocBackdrop');
+
+    function toggleToc() {
+        sidebar.classList.toggle('mobile-open');
+        backdrop.classList.toggle('show');
+    }
+
+    toggleBtn.addEventListener('click', toggleToc);
+    backdrop.addEventListener('click', toggleToc);
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 1000) {
+                sidebar.classList.remove('mobile-open');
+                backdrop.classList.remove('show');
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>
