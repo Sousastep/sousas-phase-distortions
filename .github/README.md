@@ -10,11 +10,15 @@
 
 This repository contains ai-generated rnbo codebox~ effects made for tuba, with an emphasis on phase dispersion, phase distortion, frequency modulation, comb filtering, pitch tracking, and harmonic boosts.
 
-The prompts and docs (some of which were also ai-generated) are included.
+<a href="#books-documentation">![rainbow](./media/rainbow.png)</a>
+
+# :books: Effect Parameter Reference
+
+[https://sousastep.github.io/sousas-phase-distortions/](https://sousastep.github.io/sousas-phase-distortions/)
 
 <a href="#control_knobs-effects">![rainbow](./media/rainbow.png)</a>
 
-# :control_knobs: Effect list & first impressions
+# :control_knobs: first impressions
 
 ## Single-Purpose Effects
 - 06 · asymmetric_delay_adfm = outstanding
